@@ -1,0 +1,8 @@
+{% load blog_extras %}
+
+<!-- Comments Thread Container -->
+<div class="comments-thread">
+    {% for comment in comments %}
+        {% render_comment comment 0 max_depth %}
+    {% endfor %}
+</div>

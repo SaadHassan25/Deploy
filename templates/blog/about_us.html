@@ -1,0 +1,86 @@
+{% extends 'blog/base.html' %}
+
+{% block title %}About Us - AI Blog{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row">
+        <div class="col-lg-8 mx-auto">
+            <h1 class="text-center mb-5">
+                <i class="fas fa-users me-2"></i>About Us
+            </h1>
+            
+            <div class="text-center mb-5">
+                <i class="fas fa-brain text-primary" style="font-size: 5rem;"></i>
+            </div>
+            
+            <div class="lead mb-4">
+                <p>Welcome to AI Blog, your premier destination for cutting-edge insights into the world of Artificial Intelligence and its transformative applications.</p>
+            </div>
+            
+            <h2 class="h3 mb-3"><i class="fas fa-lightbulb me-2 text-warning"></i>Our Mission</h2>
+            <p>Our mission is to democratize AI knowledge by providing accessible, high-quality content that bridges the gap between complex AI concepts and practical applications. We believe that understanding AI should not be limited to researchers and engineers alone.</p>
+            
+            <h2 class="h3 mb-3 mt-4"><i class="fas fa-eye me-2 text-info"></i>Our Vision</h2>
+            <p>We envision a world where AI literacy is widespread, enabling individuals and organizations to harness the power of artificial intelligence responsibly and effectively. Through our content, we aim to inspire innovation and foster a deeper understanding of AI's potential.</p>
+            
+            <h2 class="h3 mb-3 mt-4"><i class="fas fa-star me-2 text-success"></i>What We Cover</h2>
+            <div class="row mt-3">
+                <div class="col-md-6">
+                    <ul class="list-unstyled">
+                        <li class="mb-2"><i class="fas fa-robot text-primary me-2"></i><strong>Artificial Intelligence:</strong> Latest trends, breakthroughs, and applications</li>
+                        <li class="mb-2"><i class="fas fa-chart-line text-success me-2"></i><strong>Machine Learning:</strong> Algorithms, models, and best practices</li>
+                        <li class="mb-2"><i class="fas fa-network-wired text-info me-2"></i><strong>Deep Learning:</strong> Neural networks and advanced architectures</li>
+                    </ul>
+                </div>
+                <div class="col-md-6">
+                    <ul class="list-unstyled">
+                        <li class="mb-2"><i class="fas fa-eye text-warning me-2"></i><strong>Computer Vision:</strong> Image processing and visual AI</li>
+                        <li class="mb-2"><i class="fas fa-comments text-danger me-2"></i><strong>Natural Language Processing:</strong> Text analysis and language models</li>
+                        <li class="mb-2"><i class="fas fa-industry text-dark me-2"></i><strong>AI in Industry:</strong> Real-world applications and case studies</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <h2 class="h3 mb-3 mt-4"><i class="fas fa-users me-2 text-primary"></i>Our Team</h2>
+            <p>Our team consists of experienced AI researchers, data scientists, and technology enthusiasts who are passionate about sharing knowledge and fostering innovation. We come from diverse backgrounds in academia and industry, bringing together theoretical expertise and practical experience.</p>
+            
+            <h2 class="h3 mb-3 mt-4"><i class="fas fa-heart me-2 text-danger"></i>Our Values</h2>
+            <div class="row">
+                <div class="col-md-4 mb-3">
+                    <div class="text-center">
+                        <i class="fas fa-graduation-cap text-primary mb-2" style="font-size: 2rem;"></i>
+                        <h5>Education First</h5>
+                        <p class="small">We prioritize clear, educational content that helps readers learn and grow.</p>
+                    </div>
+                </div>
+                <div class="col-md-4 mb-3">
+                    <div class="text-center">
+                        <i class="fas fa-balance-scale text-success mb-2" style="font-size: 2rem;"></i>
+                        <h5>Ethical AI</h5>
+                        <p class="small">We promote responsible AI development and deployment practices.</p>
+                    </div>
+                </div>
+                <div class="col-md-4 mb-3">
+                    <div class="text-center">
+                        <i class="fas fa-globe text-info mb-2" style="font-size: 2rem;"></i>
+                        <h5>Accessibility</h5>
+                        <p class="small">We make complex AI concepts understandable for everyone.</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="bg-light p-4 rounded mt-5">
+                <h2 class="h4 mb-3"><i class="fas fa-envelope me-2 text-primary"></i>Get In Touch</h2>
+                <p class="mb-0">Have questions, suggestions, or want to contribute? We'd love to hear from you! While we're focused on delivering quality content, we're always open to feedback and collaboration opportunities.</p>
+            </div>
+            
+            <div class="text-center mt-5">
+                <a href="{% url 'blog:blog_list' %}" class="btn btn-primary btn-lg">
+                    <i class="fas fa-rocket me-2"></i>Explore Our Content
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Welcome to AI Blog Newsletter</title>
+    <style>
+        /* Reset and base styles */
+        body, table, td, p, div {
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: #f8f9fa;
+            color: #333333;
+            line-height: 1.6;
+        }
+        
+        .email-container {
+            max-width: 600px;
+            margin: 0 auto;
+            background-color: #ffffff;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+        
+        /* Header */
+        .email-header {
+            background: linear-gradient(135deg, #15803d 0%, #059669 100%);
+            color: white;
+            padding: 30px 40px;
+            text-align: center;
+        }
+        
+        .logo {
+            font-size: 28px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        
+        .logo-icon {
+            display: inline-block;
+            margin-right: 10px;
+            font-size: 32px;
+        }
+        
+        .header-subtitle {
+            font-size: 16px;
+            opacity: 0.9;
+            margin: 0;
+        }
+        
+        /* Content */
+        .email-content {
+            padding: 40px;
+        }
+        
+        .welcome-title {
+            color: #15803d;
+            font-size: 28px;
+            font-weight: bold;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        
+        .welcome-text {
+            font-size: 16px;
+            line-height: 1.7;
+            margin-bottom: 20px;
+            color: #555555;
+        }
+        
+        .features-section {
+            background-color: #f8f9fa;
+            border-radius: 8px;
+            padding: 25px;
+            margin: 25px 0;
+        }
+        
+        .features-title {
+            color: #15803d;
+            font-size: 20px;
+            font-weight: bold;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+        
+        .feature-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        
+        .feature-item {
+            padding: 8px 0;
+            border-left: 3px solid #15803d;
+            padding-left: 15px;
+            margin-bottom: 10px;
+            background-color: white;
+            border-radius: 4px;
+            padding: 12px 15px;
+        }
+        
+        .feature-icon {
+            color: #15803d;
+            margin-right: 8px;
+            font-weight: bold;
+        }
+        
+        .cta-section {
+            text-align: center;
+            margin: 30px 0;
+        }
+        
+        .cta-button {
+            display: inline-block;
+            background: linear-gradient(135deg, #15803d 0%, #059669 100%);
+            color: white;
+            text-decoration: none;
+            padding: 15px 30px;
+            border-radius: 8px;
+            font-weight: bold;
+            font-size: 16px;
+            transition: all 0.3s ease;
+        }
+        
+        .cta-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(21, 128, 61, 0.3);
+        }
+        
+        /* Footer */
+        .email-footer {
+            background-color: #f8f9fa;
+            padding: 30px 40px;
+            text-align: center;
+            border-top: 1px solid #e9ecef;
+        }
+        
+        .social-links {
+            margin: 20px 0;
+        }
+        
+        .social-link {
+            display: inline-block;
+            margin: 0 10px;
+            padding: 10px;
+            background-color: #15803d;
+            color: white;
+            text-decoration: none;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            text-align: center;
+            line-height: 20px;
+        }
+        
+        .footer-text {
+            font-size: 14px;
+            color: #6c757d;
+            margin: 10px 0 0 0;
+        }
+        
+        .unsubscribe-text {
+            font-size: 12px;
+            color: #999999;
+            margin-top: 15px;
+        }
+        
+        .unsubscribe-link {
+            color: #15803d;
+            text-decoration: none;
+        }
+        
+        /* Responsive */
+        @media only screen and (max-width: 600px) {
+            .email-container {
+                margin: 10px;
+                border-radius: 8px;
+            }
+            
+            .email-header,
+            .email-content,
+            .email-footer {
+                padding: 20px;
+            }
+            
+            .welcome-title {
+                font-size: 24px;
+            }
+            
+            .logo {
+                font-size: 24px;
+            }
+            
+            .features-section {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div style="padding: 20px 0;">
+        <div class="email-container">
+            <!-- Header -->
+            <div class="email-header">
+                <div class="logo">
+                    <span class="logo-icon">🧠</span>AI Blog
+                </div>
+                <p class="header-subtitle">Exploring the Future of Artificial Intelligence</p>
+            </div>
+            
+            <!-- Content -->
+            <div class="email-content">
+                <h1 class="welcome-title">Welcome to Our Community!</h1>
+                
+                <p class="welcome-text">
+                    Thank you for subscribing to the AI Blog newsletter! We're thrilled to have you join our community of AI enthusiasts, researchers, and technology lovers.
+                </p>
+                
+                <p class="welcome-text">
+                    You've just taken the first step into a world of cutting-edge insights, breakthrough discoveries, and expert analysis in the field of artificial intelligence.
+                </p>
+                
+                <div class="features-section">
+                    <h2 class="features-title">What You Can Expect</h2>
+                    <ul class="feature-list">
+                        <li class="feature-item">
+                            <span class="feature-icon">🚀</span>
+                            <strong>Latest AI Breakthroughs:</strong> Stay updated with the newest developments in artificial intelligence and machine learning
+                        </li>
+                        <li class="feature-item">
+                            <span class="feature-icon">📚</span>
+                            <strong>In-Depth Tutorials:</strong> Learn from comprehensive guides and hands-on tutorials
+                        </li>
+                        <li class="feature-item">
+                            <span class="feature-icon">🔬</span>
+                            <strong>Research Insights:</strong> Dive deep into cutting-edge research papers and their practical applications
+                        </li>
+                        <li class="feature-item">
+                            <span class="feature-icon">💡</span>
+                            <strong>Expert Analysis:</strong> Get expert perspectives on industry trends and future predictions
+                        </li>
+                        <li class="feature-item">
+                            <span class="feature-icon">🛠️</span>
+                            <strong>Practical Tools:</strong> Discover tools and frameworks to enhance your AI projects
+                        </li>
+                    </ul>
+                </div>
+                
+                <p class="welcome-text">
+                    Our weekly newsletter will be delivered to your inbox every <strong>Tuesday</strong>, packed with valuable content that will keep you at the forefront of AI innovation.
+                </p>
+                
+                <div class="cta-section">
+                    <a href="{{ site_url }}" class="cta-button">
+                        🌟 Explore AI Blog Now
+                    </a>
+                </div>
+                
+                <p class="welcome-text">
+                    Have questions or suggestions? Feel free to reply to this email or contact us at 
+                    <a href="mailto:contact@ai.bytes.com" style="color: #15803d;">contact@ai.bytes.com</a>. 
+                    We'd love to hear from you!
+                </p>
+            </div>
+            
+            <!-- Footer -->
+            <div class="email-footer">
+                <p class="footer-text">
+                    <strong>AI Blog</strong><br>
+                    Ajman, UAE<br>
+                    📧 contact@ai.bytes.com | 📱 +1 (555) 896-7466
+                </p>
+                
+                <p class="unsubscribe-text">
+                    You're receiving this email because you subscribed to our newsletter.<br>
+                    Don't want these emails? 
+                    <a href="#" class="unsubscribe-link">Unsubscribe here</a> | 
+                    <a href="{{ site_url }}/privacy/" class="unsubscribe-link">Privacy Policy</a>
+                </p>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

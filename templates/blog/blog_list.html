@@ -1,0 +1,443 @@
+{% extends 'blog/base.html' %}
+
+{% block title %}All Blogs - AI Blog{% endblock %}
+
+{% block content %}
+<!-- Page Header -->
+<section class="bg-light py-5">
+    <div class="container">
+        <div class="text-center">
+            <h1 class="section-title mb-3">
+                <i class="fas fa-th-list me-2"></i>All Articles
+            </h1>
+            <p class="section-subtitle">Explore our complete collection of AI and technology insights</p>
+            {% if total_posts %}
+            <div class="mt-3">
+                <span class="badge bg-primary fs-6">{{ total_posts }} article{{ total_posts|pluralize }}</span>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</section>
+
+<!-- Main Content -->
+<section class="py-5">
+    <div class="container">
+        <div class="row">
+            <!-- Main Content Area -->
+            <div class="col-lg-8 col-md-12 mb-4">
+                <!-- Filters Bar -->
+                <div class="filters-bar bg-white p-4 rounded-3 shadow-sm mb-4">
+                    <form method="GET" class="row g-3" id="filterForm">
+                        <!-- Search -->
+                        <div class="col-md-4 col-sm-6">
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="fas fa-search"></i></span>
+                                <input type="text" class="form-control" name="q" value="{{ query|default:'' }}" 
+                                       placeholder="Search articles...">
+                            </div>
+                        </div>
+                        
+                        <!-- Category Filter -->
+                        <div class="col-md-3 col-sm-6">
+                            <select class="form-select" name="category">
+                                <option value="all" {% if not current_category or current_category == 'all' %}selected{% endif %}>All Categories</option>
+                                {% for category in categories %}
+                                <option value="{{ category.name }}" {% if current_category == category.name %}selected{% endif %}>
+                                    {{ category.name }} ({{ category.post_count }})
+                                </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        
+                        <!-- Sort Filter -->
+                        <div class="col-md-3 col-sm-6">
+                            <select class="form-select" name="sort">
+                                <option value="newest" {% if current_sort == 'newest' or not current_sort %}selected{% endif %}>Newest First</option>
+                                <option value="oldest" {% if current_sort == 'oldest' %}selected{% endif %}>Oldest First</option>
+                                <option value="title_asc" {% if current_sort == 'title_asc' %}selected{% endif %}>Title A-Z</option>
+                                <option value="title_desc" {% if current_sort == 'title_desc' %}selected{% endif %}>Title Z-A</option>
+                                <option value="popular" {% if current_sort == 'popular' %}selected{% endif %}>Most Popular</option>
+                            </select>
+                        </div>
+                        
+                        <!-- Reading Time Filter -->
+                        <div class="col-md-2 col-sm-6">
+                            <select class="form-select" name="reading_time">
+                                <option value="" {% if not current_reading_time %}selected{% endif %}>All Times</option>
+                                <option value="quick" {% if current_reading_time == 'quick' %}selected{% endif %}>Quick (&lt;3min)</option>
+                                <option value="medium" {% if current_reading_time == 'medium' %}selected{% endif %}>Medium (3-7min)</option>
+                                <option value="long" {% if current_reading_time == 'long' %}selected{% endif %}>Long (&gt;7min)</option>
+                            </select>
+                        </div>
+                        
+                        <!-- Hidden fields to preserve other filters -->
+                        {% if request.GET.month %}<input type="hidden" name="month" value="{{ request.GET.month }}">{% endif %}
+                        {% if request.GET.year %}<input type="hidden" name="year" value="{{ request.GET.year }}">{% endif %}
+                    </form>
+                    
+                    <!-- Active Filters Display -->
+                    {% if query or current_category != 'all' or current_tag or current_sort != 'newest' or current_reading_time or request.GET.month %}
+                    <div class="mt-4">
+                        <h6 class="text-muted mb-2">
+                            <i class="fas fa-filter me-2"></i>Active Filters:
+                        </h6>
+                        <div class="d-flex flex-wrap gap-2 mb-3">
+                            {% if query %}
+                            <span class="badge bg-primary d-flex align-items-center">
+                                <i class="fas fa-search me-1"></i>
+                                Search: "{{ query }}"
+                                <a href="?{% if current_category and current_category != 'all' %}category={{ current_category }}&{% endif %}{% if current_tag %}tag={{ current_tag }}&{% endif %}{% if current_sort and current_sort != 'newest' %}sort={{ current_sort }}&{% endif %}{% if current_reading_time %}reading_time={{ current_reading_time }}&{% endif %}{% if request.GET.month %}month={{ request.GET.month }}&year={{ request.GET.year }}&{% endif %}" 
+                                   class="text-white ms-2" title="Remove search filter">
+                                    <i class="fas fa-times"></i>
+                                </a>
+                            </span>
+                            {% endif %}
+                            
+                            {% if current_category and current_category != 'all' %}
+                            <span class="badge bg-info d-flex align-items-center">
+                                <i class="fas fa-folder me-1"></i>
+                                Category: {{ current_category }}
+                                <a href="?{% if query %}q={{ query }}&{% endif %}{% if current_tag %}tag={{ current_tag }}&{% endif %}{% if current_sort and current_sort != 'newest' %}sort={{ current_sort }}&{% endif %}{% if current_reading_time %}reading_time={{ current_reading_time }}&{% endif %}{% if request.GET.month %}month={{ request.GET.month }}&year={{ request.GET.year }}&{% endif %}" 
+                                   class="text-white ms-2" title="Remove category filter">
+                                    <i class="fas fa-times"></i>
+                                </a>
+                            </span>
+                            {% endif %}
+                            
+                            {% if current_tag %}
+                            <span class="badge bg-success d-flex align-items-center">
+                                <i class="fas fa-tag me-1"></i>
+                                Tag: {{ current_tag }}
+                                <a href="?{% if query %}q={{ query }}&{% endif %}{% if current_category and current_category != 'all' %}category={{ current_category }}&{% endif %}{% if current_sort and current_sort != 'newest' %}sort={{ current_sort }}&{% endif %}{% if current_reading_time %}reading_time={{ current_reading_time }}&{% endif %}{% if request.GET.month %}month={{ request.GET.month }}&year={{ request.GET.year }}&{% endif %}" 
+                                   class="text-white ms-2" title="Remove tag filter">
+                                    <i class="fas fa-times"></i>
+                                </a>
+                            </span>
+                            {% endif %}
+                            
+                            {% if current_sort and current_sort != 'newest' %}
+                            <span class="badge bg-warning d-flex align-items-center">
+                                <i class="fas fa-sort me-1"></i>
+                                Sort: 
+                                {% if current_sort == 'oldest' %}Oldest First
+                                {% elif current_sort == 'title_asc' %}Title A-Z
+                                {% elif current_sort == 'title_desc' %}Title Z-A
+                                {% elif current_sort == 'popular' %}Most Popular
+                                {% endif %}
+                                <a href="?{% if query %}q={{ query }}&{% endif %}{% if current_category and current_category != 'all' %}category={{ current_category }}&{% endif %}{% if current_tag %}tag={{ current_tag }}&{% endif %}{% if current_reading_time %}reading_time={{ current_reading_time }}&{% endif %}{% if request.GET.month %}month={{ request.GET.month }}&year={{ request.GET.year }}&{% endif %}" 
+                                   class="text-dark ms-2" title="Remove sort filter">
+                                    <i class="fas fa-times"></i>
+                                </a>
+                            </span>
+                            {% endif %}
+                            
+                            {% if current_reading_time %}
+                            <span class="badge bg-secondary d-flex align-items-center">
+                                <i class="fas fa-clock me-1"></i>
+                                Reading Time: 
+                                {% if current_reading_time == 'quick' %}Quick (&lt;3min)
+                                {% elif current_reading_time == 'medium' %}Medium (3-7min)
+                                {% elif current_reading_time == 'long' %}Long (&gt;7min)
+                                {% endif %}
+                                <a href="?{% if query %}q={{ query }}&{% endif %}{% if current_category and current_category != 'all' %}category={{ current_category }}&{% endif %}{% if current_tag %}tag={{ current_tag }}&{% endif %}{% if current_sort and current_sort != 'newest' %}sort={{ current_sort }}&{% endif %}{% if request.GET.month %}month={{ request.GET.month }}&year={{ request.GET.year }}&{% endif %}" 
+                                   class="text-white ms-2" title="Remove reading time filter">
+                                    <i class="fas fa-times"></i>
+                                </a>
+                            </span>
+                            {% endif %}
+                            
+                            {% if request.GET.month %}
+                            <span class="badge bg-dark d-flex align-items-center">
+                                <i class="fas fa-calendar me-1"></i>
+                                Archive: 
+                                {% load blog_extras %}
+                                {{ request.GET.month|month_name }} {{ request.GET.year }}
+                                <a href="?{% if query %}q={{ query }}&{% endif %}{% if current_category and current_category != 'all' %}category={{ current_category }}&{% endif %}{% if current_tag %}tag={{ current_tag }}&{% endif %}{% if current_sort and current_sort != 'newest' %}sort={{ current_sort }}&{% endif %}{% if current_reading_time %}reading_time={{ current_reading_time }}&{% endif %}" 
+                                   class="text-white ms-2" title="Remove archive filter">
+                                    <i class="fas fa-times"></i>
+                                </a>
+                            </span>
+                            {% endif %}
+                        </div>
+                        
+                        <!-- Clear All Filters -->
+                        <a href="{% url 'blog:blog_list' %}" class="btn btn-outline-secondary btn-sm">
+                            <i class="fas fa-times me-1"></i>Clear All Filters
+                        </a>
+                    </div>
+                    {% endif %}
+                </div>
+
+                <!-- Articles Grid -->
+                {% if page_obj %}
+                <div class="row">
+                    {% for post in page_obj %}
+                    <div class="col-lg-6 col-md-6 mb-4">
+                        <div class="article-card">
+                            <div class="article-image">
+                                {% if post.featured_image %}
+                                <img src="{{ post.featured_image.url }}" alt="{{ post.title }}">
+                                {% else %}
+                                <div class="d-flex align-items-center justify-content-center h-100 bg-light">
+                                    <i class="fas fa-image text-muted" style="font-size: 3rem;"></i>
+                                </div>
+                                {% endif %}
+                                <div class="article-category">
+                                    <span class="badge bg-primary">{{ post.category }}</span>
+                                </div>
+                            </div>
+                            
+                            <div class="article-content">
+                                <h4 class="article-title mb-3">
+                                    <a href="{{ post.get_absolute_url }}">{{ post.title }}</a>
+                                </h4>
+                                <p class="article-excerpt mb-3">{{ post.excerpt }}</p>
+                                
+                                <!-- Tags -->
+                                {% if post.tags.exists %}
+                                <div class="mb-3">
+                                    {% for tag in post.tags.all %}
+                                    <a href="{% url 'blog:tag_posts' tag.slug %}" class="badge bg-success text-decoration-none me-1"># {{ tag.name }}</a>
+                                    {% endfor %}
+                                </div>
+                                {% endif %}
+                                
+                                <div class="article-meta">
+                                    <small class="text-muted">
+                                        <span class="d-inline-block mobile-text-center">
+                                            <i class="fas fa-user me-1"></i>{{ post.author.get_full_name|default:post.author.username }}
+                                        </span>
+                                        <span class="mx-2 d-none d-sm-inline">•</span>
+                                        <br class="d-sm-none">
+                                        <span class="d-inline-block mobile-text-center">
+                                            <i class="fas fa-calendar me-1"></i>{{ post.created_at|date:"M d, Y" }}
+                                        </span>
+                                        <span class="mx-2 d-none d-sm-inline">•</span>
+                                        <br class="d-sm-none">
+                                        <span class="d-inline-block mobile-text-center">
+                                            <i class="fas fa-clock me-1"></i>{{ post.get_reading_time_display }}
+                                        </span>
+                                    </small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+        
+                <!-- Pagination -->
+                {% if page_obj.has_other_pages %}
+                <nav aria-label="Blog pagination" class="mt-5">
+                    <ul class="pagination justify-content-center">
+                        {% if page_obj.has_previous %}
+                        <li class="page-item">
+                            <a class="page-link" href="?page=1{% if query %}&q={{ query }}{% endif %}{% if current_category and current_category != 'all' %}&category={{ current_category }}{% endif %}{% if current_sort and current_sort != 'newest' %}&sort={{ current_sort }}{% endif %}{% if current_reading_time %}&reading_time={{ current_reading_time }}{% endif %}{% if request.GET.month %}&month={{ request.GET.month }}{% endif %}{% if request.GET.year %}&year={{ request.GET.year }}{% endif %}">
+                                <i class="fas fa-angle-double-left"></i> First
+                            </a>
+                        </li>
+                        <li class="page-item">
+                            <a class="page-link" href="?page={{ page_obj.previous_page_number }}{% if query %}&q={{ query }}{% endif %}{% if current_category and current_category != 'all' %}&category={{ current_category }}{% endif %}{% if current_sort and current_sort != 'newest' %}&sort={{ current_sort }}{% endif %}{% if current_reading_time %}&reading_time={{ current_reading_time }}{% endif %}{% if request.GET.month %}&month={{ request.GET.month }}{% endif %}{% if request.GET.year %}&year={{ request.GET.year }}{% endif %}">
+                                <i class="fas fa-angle-left"></i> Previous
+                            </a>
+                        </li>
+                        {% endif %}
+                        
+                        {% for num in page_obj.paginator.page_range %}
+                            {% if page_obj.number == num %}
+                            <li class="page-item active">
+                                <span class="page-link">{{ num }}</span>
+                            </li>
+                            {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
+                            <li class="page-item">
+                                <a class="page-link" href="?page={{ num }}{% if query %}&q={{ query }}{% endif %}{% if current_category and current_category != 'all' %}&category={{ current_category }}{% endif %}{% if current_sort and current_sort != 'newest' %}&sort={{ current_sort }}{% endif %}{% if current_reading_time %}&reading_time={{ current_reading_time }}{% endif %}{% if request.GET.month %}&month={{ request.GET.month }}{% endif %}{% if request.GET.year %}&year={{ request.GET.year }}{% endif %}">{{ num }}</a>
+                            </li>
+                            {% endif %}
+                        {% endfor %}
+                        
+                        {% if page_obj.has_next %}
+                        <li class="page-item">
+                            <a class="page-link" href="?page={{ page_obj.next_page_number }}{% if query %}&q={{ query }}{% endif %}{% if current_category and current_category != 'all' %}&category={{ current_category }}{% endif %}{% if current_sort and current_sort != 'newest' %}&sort={{ current_sort }}{% endif %}{% if current_reading_time %}&reading_time={{ current_reading_time }}{% endif %}{% if request.GET.month %}&month={{ request.GET.month }}{% endif %}{% if request.GET.year %}&year={{ request.GET.year }}{% endif %}">
+                                Next <i class="fas fa-angle-right"></i>
+                            </a>
+                        </li>
+                        <li class="page-item">
+                            <a class="page-link" href="?page={{ page_obj.paginator.num_pages }}{% if query %}&q={{ query }}{% endif %}{% if current_category and current_category != 'all' %}&category={{ current_category }}{% endif %}{% if current_sort and current_sort != 'newest' %}&sort={{ current_sort }}{% endif %}{% if current_reading_time %}&reading_time={{ current_reading_time }}{% endif %}{% if request.GET.month %}&month={{ request.GET.month }}{% endif %}{% if request.GET.year %}&year={{ request.GET.year }}{% endif %}">
+                                Last <i class="fas fa-angle-double-right"></i>
+                            </a>
+                        </li>
+                        {% endif %}
+                    </ul>
+                </nav>
+                {% endif %}
+                
+                {% else %}
+                <div class="text-center py-5">
+                    <i class="fas fa-newspaper text-muted mb-3" style="font-size: 4rem; opacity: 0.3;"></i>
+                    <h4 class="text-muted">No articles found</h4>
+                    {% if query or current_category != 'all' or current_reading_time %}
+                    <p class="text-muted">Try adjusting your filters or search terms.</p>
+                    <a href="{% url 'blog:blog_list' %}" class="btn btn-primary">
+                        <i class="fas fa-refresh me-2"></i>View All Articles
+                    </a>
+                    {% else %}
+                    <p class="text-muted">Check back soon for new content!</p>
+                    {% endif %}
+                </div>
+                {% endif %}
+            </div>
+
+            <!-- Sidebar -->
+            <div class="col-lg-4 col-md-12">
+                <div class="sticky-sidebar">
+                    <!-- Search Widget -->
+                    <div class="sidebar-widget mb-4">
+                        <h5 class="widget-title">
+                            <i class="fas fa-search me-2"></i>Search Articles
+                        </h5>
+                        <form method="GET" action="{% url 'blog:blog_list' %}">
+                            <div class="input-group">
+                                <input type="text" class="form-control" name="q" value="{{ query|default:'' }}" 
+                                       placeholder="Search articles...">
+                                <button class="btn btn-primary" type="submit">
+                                    <i class="fas fa-search"></i>
+                                </button>
+                            </div>
+                            {% if current_category and current_category != 'all' %}
+                                <input type="hidden" name="category" value="{{ current_category }}">
+                            {% endif %}
+                            {% if current_sort and current_sort != 'newest' %}
+                                <input type="hidden" name="sort" value="{{ current_sort }}">
+                            {% endif %}
+                            {% if current_reading_time %}
+                                <input type="hidden" name="reading_time" value="{{ current_reading_time }}">
+                            {% endif %}
+                        </form>
+                    </div>
+
+                    <!-- Categories Widget -->
+                    <div class="sidebar-widget mb-4">
+                        <h5 class="widget-title">
+                            <i class="fas fa-folder me-2"></i>Categories
+                        </h5>
+                        <ul class="category-list">
+                            <li class="category-item">
+                                <a href="{% url 'blog:blog_list' %}" class="category-link {% if not current_category or current_category == 'all' %}active{% endif %}">
+                                    <span class="category-name">All Categories</span>
+                                    <span class="category-count">{{ total_posts }}</span>
+                                </a>
+                            </li>
+                            {% for category in categories %}
+                            <li class="category-item">
+                                <a href="?category={{ category.name }}{% if query %}&q={{ query }}{% endif %}{% if current_sort and current_sort != 'newest' %}&sort={{ current_sort }}{% endif %}{% if current_reading_time %}&reading_time={{ current_reading_time }}{% endif %}" 
+                                   class="category-link {% if current_category == category.name %}active{% endif %}">
+                                    <span class="category-name">{{ category.name }}</span>
+                                    <span class="category-count">{{ category.post_count }}</span>
+                                </a>
+                            </li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+
+                    <!-- Archives Widget -->
+                    <div class="sidebar-widget mb-4">
+                        <h5 class="widget-title">
+                            <i class="fas fa-calendar me-2"></i>Archives
+                        </h5>
+                        <ul class="archive-list">
+                            {% for archive in archives %}
+                            <li class="archive-item">
+                                <a href="?month={{ archive.month }}&year={{ archive.year }}{% if query %}&q={{ query }}{% endif %}{% if current_category and current_category != 'all' %}&category={{ current_category }}{% endif %}{% if current_sort and current_sort != 'newest' %}&sort={{ current_sort }}{% endif %}{% if current_reading_time %}&reading_time={{ current_reading_time }}{% endif %}" 
+                                   class="archive-link">
+                                    <i class="fas fa-calendar-alt me-2"></i>
+                                    {{ archive.month_name }} {{ archive.year }}
+                                    <span class="archive-count">({{ archive.post_count }})</span>
+                                </a>
+                            </li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+
+                    <!-- Popular Tags Widget -->
+                    <div class="sidebar-widget mb-4">
+                        <h5 class="widget-title">
+                            <i class="fas fa-tags me-2"></i>Popular Tags
+                        </h5>
+                        {% if popular_tags %}
+                        <div class="tags-cloud">
+                            {% for tag in popular_tags %}
+                            <a href="{% url 'blog:tag_posts' tag.slug %}" 
+                               class="tag-link {% if current_tag == tag.slug %}active{% endif %}">
+                                # {{ tag.name }}
+                                <span class="tag-count">({{ tag.post_count }})</span>
+                            </a>
+                            {% endfor %}
+                        </div>
+                        <div class="text-center mt-3">
+                            <a href="{% url 'blog:all_tags' %}" class="btn btn-outline-success btn-sm">
+                                View All Tags <i class="fas fa-arrow-right ms-1"></i>
+                            </a>
+                        </div>
+                        {% endif %}
+                    </div>
+
+                    <!-- Featured Posts Widget -->
+                    <div class="sidebar-widget">
+                        <h5 class="widget-title">
+                            <i class="fas fa-star me-2"></i>Featured Posts
+                        </h5>
+                        <div class="featured-posts">
+                            {% for post in featured_posts %}
+                            <div class="featured-post">
+                                <div class="featured-post-image">
+                                    {% if post.featured_image %}
+                                    <img src="{{ post.featured_image.url }}" alt="{{ post.title }}" class="img-fluid rounded">
+                                    {% else %}
+                                    <div class="placeholder-image d-flex align-items-center justify-content-center bg-light rounded">
+                                        <i class="fas fa-image text-muted"></i>
+                                    </div>
+                                    {% endif %}
+                                </div>
+                                <div class="featured-post-content">
+                                    <h6 class="featured-post-title">
+                                        <a href="{{ post.get_absolute_url }}">{{ post.title|truncatechars:50 }}</a>
+                                    </h6>
+                                    <small class="featured-post-meta text-muted">
+                                        <i class="fas fa-calendar me-1"></i>{{ post.created_at|date:"M d, Y" }}
+                                        <span class="mx-1">•</span>
+                                        <i class="fas fa-clock me-1"></i>{{ post.get_reading_time_display }}
+                                    </small>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Auto-submit filter form -->
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const filterForm = document.getElementById('filterForm');
+    const filterSelects = filterForm.querySelectorAll('select');
+    
+    filterSelects.forEach(select => {
+        select.addEventListener('change', function() {
+            filterForm.submit();
+        });
+    });
+    
+    // Search on Enter key
+    const searchInput = filterForm.querySelector('input[name="q"]');
+    searchInput.addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') {
+            e.preventDefault();
+            filterForm.submit();
+        }
+    });
+});
+</script>
+{% endblock %}

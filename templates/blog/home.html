@@ -1,0 +1,293 @@
+{% extends 'blog/base.html' %}
+
+{% block title %}AI Blog - Home{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="hero-section">
+    <div class="container">
+        <div class="row align-items-center min-vh-75">
+            <div class="col-lg-6 hero-content">
+                <div class="hero-badge mb-3 mobile-text-center">
+                    <i class="fas fa-bolt me-2"></i>
+                    Latest in AI Technology
+                </div>
+                
+                <h1 class="hero-title mb-4 mobile-text-center">
+                    Exploring the Future of
+                    <span class="text-primary">Artificial Intelligence</span>
+                </h1>
+                
+                <p class="hero-description mb-4 mobile-text-center">
+                    Dive deep into the world of AI, Machine Learning, and emerging technologies. 
+                    Discover insights, tutorials, and research that shape tomorrow's innovation.
+                </p>
+                
+                <div class="hero-actions mb-4 d-flex flex-column flex-sm-row justify-content-center justify-content-lg-start">
+                    <a href="{% url 'blog:blog_list' %}" class="btn btn-primary btn-lg me-sm-3 mb-2 mb-sm-0">
+                        <i class="fas fa-rocket me-2"></i>Explore Articles
+                    </a>
+                    <a href="{% url 'blog:about_us' %}" class="btn btn-outline-primary btn-lg">
+                        <i class="fas fa-info-circle me-2"></i>Learn More
+                    </a>
+                </div>
+                
+                <div class="hero-stats">
+                    <div class="row text-center text-lg-start">
+                        <div class="col-4">
+                            <div class="stat-item">
+                                <div class="stat-number">{{ total_posts }}</div>
+                                <div class="stat-label">Articles</div>
+                            </div>
+                        </div>
+                        <div class="col-4">
+                            <div class="stat-item">
+                                <div class="stat-number">5</div>
+                                <div class="stat-label">Categories</div>
+                            </div>
+                        </div>
+                        <div class="col-4">
+                            <div class="stat-item">
+                                <div class="stat-number">20K+</div>
+                                <div class="stat-label">Readers</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-lg-6 d-none d-lg-block">
+                <div class="hero-visual">
+                    <i class="fas fa-brain hero-image"></i>
+                    <div class="floating-elements">
+                        <div class="floating-card card-1">
+                            <i class="fas fa-robot"></i>
+                            <span>AI</span>
+                        </div>
+                        <div class="floating-card card-2">
+                            <i class="fas fa-chart-line"></i>
+                            <span>ML</span>
+                        </div>
+                        <div class="floating-card card-3">
+                            <i class="fas fa-network-wired"></i>
+                            <span>DL</span>
+                        </div>
+                        <div class="floating-card card-4">
+                            <i class="fas fa-eye"></i>
+                            <span>CV</span>
+                        </div>
+                        <div class="floating-card card-5">
+                            <i class="fas fa-comments"></i>
+                            <span>NLP</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Featured Article Section -->
+{% if featured_post %}
+<section class="featured-section">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-10">
+                <div class="featured-card">
+                    <div class="row g-0">
+                        <div class="col-lg-6">
+                            <div class="featured-image">
+                                {% if featured_post.featured_image %}
+                                <img src="{{ featured_post.featured_image.url }}" alt="{{ featured_post.title }}">
+                                {% else %}
+                                <div class="d-flex align-items-center justify-content-center h-100 bg-light">
+                                    <i class="fas fa-image text-muted" style="font-size: 4rem;"></i>
+                                </div>
+                                {% endif %}
+                                <div class="featured-badge">Featured</div>
+                            </div>
+                        </div>
+                        <div class="col-lg-6">
+                            <div class="featured-content">
+                                <span class="badge bg-primary mb-3">{{ featured_post.category }}</span>
+                                <h2 class="featured-title mb-3">{{ featured_post.title }}</h2>
+                                <p class="featured-excerpt mb-4">{{ featured_post.excerpt }}</p>
+                                
+                                <div class="featured-author mb-4">
+                                    <i class="fas fa-user-circle author-avatar me-3"></i>
+                                    <div>
+                                        <div class="author-name">{{ featured_post.author.get_full_name|default:featured_post.author.username }}</div>
+                                        <small class="text-muted">
+                                            <i class="fas fa-calendar me-1"></i>{{ featured_post.created_at|date:"M d, Y" }}
+                                            <span class="mx-2">•</span>
+                                            <i class="fas fa-clock me-1"></i>{{ featured_post.get_reading_time_display }}
+                                        </small>
+                                    </div>
+                                </div>
+                                
+                                <a href="{{ featured_post.get_absolute_url }}" class="btn btn-primary">
+                                    Read Full Article <i class="fas fa-arrow-right ms-2"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endif %}
+
+<!-- Recent Articles Section -->
+<section class="py-5">
+    <div class="container">
+        <div class="text-center mb-5">
+            <h2 class="section-title mb-3">Latest Articles</h2>
+            <p class="section-subtitle">Stay updated with our most recent insights and discoveries</p>
+        </div>
+        
+        {% if recent_posts %}
+        <div class="row">
+            {% for post in recent_posts %}
+            <div class="col-lg-4 col-md-6 mb-4">
+                <div class="article-card">
+                    <div class="article-image">
+                        {% if post.featured_image %}
+                        <img src="{{ post.featured_image.url }}" alt="{{ post.title }}">
+                        {% else %}
+                        <div class="d-flex align-items-center justify-content-center h-100 bg-light">
+                            <i class="fas fa-image text-muted" style="font-size: 3rem;"></i>
+                        </div>
+                        {% endif %}
+                        <div class="article-category">
+                            <span class="badge bg-primary">{{ post.category }}</span>
+                        </div>
+                    </div>
+                    
+                    <div class="article-content">
+                        <h4 class="article-title mb-3">
+                            <a href="{{ post.get_absolute_url }}">{{ post.title }}</a>
+                        </h4>
+                        <p class="article-excerpt mb-3">{{ post.excerpt }}</p>
+                        
+                        <!-- Tags -->
+                        {% if post.tags.exists %}
+                        <div class="mb-3">
+                            {% for tag in post.tags.all %}
+                            <a href="{% url 'blog:tag_posts' tag.slug %}" class="badge bg-success text-decoration-none me-1"># {{ tag.name }}</a>
+                            {% endfor %}
+                        </div>
+                        {% endif %}
+                        
+                        <div class="article-meta">
+                            <small class="text-muted">
+                                <i class="fas fa-user me-1"></i>{{ post.author.get_full_name|default:post.author.username }}
+                                <span class="mx-2">•</span>
+                                <i class="fas fa-calendar me-1"></i>{{ post.created_at|date:"M d, Y" }}
+                                <span class="mx-2">•</span>
+                                <i class="fas fa-clock me-1"></i>{{ post.get_reading_time_display }}
+                            </small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        
+        <div class="text-center mt-5">
+            <a href="{% url 'blog:blog_list' %}" class="btn btn-outline-primary btn-lg">
+                <i class="fas fa-th-list me-2"></i>View All Articles
+            </a>
+        </div>
+        {% else %}
+        <div class="text-center py-5">
+            <i class="fas fa-newspaper text-muted mb-3" style="font-size: 4rem; opacity: 0.3;"></i>
+            <h4 class="text-muted">No articles available yet</h4>
+            <p class="text-muted">Check back soon for amazing content!</p>
+        </div>
+        {% endif %}
+    </div>
+</section>
+
+<!-- Categories Section -->
+<section class="bg-light py-5">
+    <div class="container">
+        <div class="text-center mb-5">
+            <h2 class="section-title mb-3">Explore Categories</h2>
+            <p class="section-subtitle">Discover articles across different AI and technology domains</p>
+        </div>
+        
+        <div class="row">
+            <div class="col-lg-2-4 col-md-6 col-sm-6 mb-4">
+                <div class="category-card">
+                    <i class="fas fa-robot category-icon"></i>
+                    <h5 class="category-title">Artificial Intelligence</h5>
+                    <p class="category-description">Latest trends and developments in AI technology and research</p>
+                    <div class="category-stats">
+                        <small class="text-muted">{{ ai_count }} articles</small>
+                    </div>
+                    <a href="{% url 'blog:category_posts' 'AI' %}" class="category-link">
+                        Explore AI <i class="fas fa-arrow-right ms-1"></i>
+                    </a>
+                </div>
+            </div>
+            
+            <div class="col-lg-2-4 col-md-6 col-sm-6 mb-4">
+                <div class="category-card">
+                    <i class="fas fa-chart-line category-icon"></i>
+                    <h5 class="category-title">Machine Learning</h5>
+                    <p class="category-description">Algorithms, models, and ML best practices for real-world applications</p>
+                    <div class="category-stats">
+                        <small class="text-muted">{{ ml_count }} articles</small>
+                    </div>
+                    <a href="{% url 'blog:category_posts' 'ML' %}" class="category-link">
+                        Explore ML <i class="fas fa-arrow-right ms-1"></i>
+                    </a>
+                </div>
+            </div>
+            
+            <div class="col-lg-2-4 col-md-6 col-sm-6 mb-4">
+                <div class="category-card">
+                    <i class="fas fa-network-wired category-icon"></i>
+                    <h5 class="category-title">Deep Learning</h5>
+                    <p class="category-description">Neural networks and deep learning architectures explained</p>
+                    <div class="category-stats">
+                        <small class="text-muted">{{ dl_count }} articles</small>
+                    </div>
+                    <a href="{% url 'blog:category_posts' 'DL' %}" class="category-link">
+                        Explore DL <i class="fas fa-arrow-right ms-1"></i>
+                    </a>
+                </div>
+            </div>
+            
+            <div class="col-lg-2-4 col-md-6 col-sm-6 mb-4">
+                <div class="category-card">
+                    <i class="fas fa-eye category-icon"></i>
+                    <h5 class="category-title">Computer Vision</h5>
+                    <p class="category-description">Image processing and visual recognition systems</p>
+                    <div class="category-stats">
+                        <small class="text-muted">{{ cv_count }} articles</small>
+                    </div>
+                    <a href="{% url 'blog:category_posts' 'CV' %}" class="category-link">
+                        Explore CV <i class="fas fa-arrow-right ms-1"></i>
+                    </a>
+                </div>
+            </div>
+            
+            <div class="col-lg-2-4 col-md-6 col-sm-6 mb-4">
+                <div class="category-card">
+                    <i class="fas fa-comments category-icon"></i>
+                    <h5 class="category-title">Natural Language Processing</h5>
+                    <p class="category-description">Text analysis and language understanding technologies</p>
+                    <div class="category-stats">
+                        <small class="text-muted">{{ nlp_count }} articles</small>
+                    </div>
+                    <a href="{% url 'blog:category_posts' 'NLP' %}" class="category-link">
+                        Explore NLP <i class="fas fa-arrow-right ms-1"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

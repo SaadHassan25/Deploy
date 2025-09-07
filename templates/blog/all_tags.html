@@ -1,0 +1,83 @@
+{% extends 'blog/base.html' %}
+
+{% block title %}All Tags - AI Blog{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row">
+        <div class="col-12">
+            <div class="text-center mb-5">
+                <h1 class="display-6">All Tags</h1>
+                <p class="lead text-muted">Explore all topics covered in our blog</p>
+            </div>
+        </div>
+    </div>
+    
+    {% if tags %}
+    <div class="row">
+        <div class="col-12">
+            <div class="row">
+                {% for tag in tags %}
+                <div class="col-md-6 col-lg-4 col-xl-3 mb-4">
+                    <div class="card h-100 shadow-sm">
+                        <div class="card-body text-center">
+                            <div class="mb-3">
+                                <span class="badge bg-success fs-5"># {{ tag.name }}</span>
+                            </div>
+                            {% if tag.description %}
+                            <p class="card-text text-muted small">{{ tag.description }}</p>
+                            {% endif %}
+                            <p class="text-muted small mb-3">
+                                {{ tag.post_count }} post{{ tag.post_count|pluralize }}
+                            </p>
+                            <a href="{% url 'blog:tag_posts' tag.slug %}" class="btn btn-outline-success btn-sm">
+                                View Posts <i class="fas fa-arrow-right ms-1"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+    
+    <!-- Tag cloud style display -->
+    <div class="row mt-5">
+        <div class="col-12">
+            <h3 class="text-center mb-4">Tag Cloud</h3>
+            <div class="text-center">
+                {% for tag in tags %}
+                {% if tag.post_count > 5 %}
+                <a href="{% url 'blog:tag_posts' tag.slug %}" class="badge bg-success text-decoration-none me-2 mb-2" style="font-size: 1.2rem;">
+                    # {{ tag.name }} ({{ tag.post_count }})
+                </a>
+                {% elif tag.post_count > 2 %}
+                <a href="{% url 'blog:tag_posts' tag.slug %}" class="badge bg-success text-decoration-none me-2 mb-2" style="font-size: 1rem;">
+                    # {{ tag.name }} ({{ tag.post_count }})
+                </a>
+                {% else %}
+                <a href="{% url 'blog:tag_posts' tag.slug %}" class="badge bg-success text-decoration-none me-2 mb-2" style="font-size: 0.9rem;">
+                    # {{ tag.name }} ({{ tag.post_count }})
+                </a>
+                {% endif %}
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+    
+    {% else %}
+    <div class="row">
+        <div class="col-12 text-center">
+            <div class="py-5">
+                <i class="fas fa-tags text-muted mb-3" style="font-size: 4rem;"></i>
+                <h3>No Tags Found</h3>
+                <p class="text-muted">No tags have been created yet.</p>
+                <a href="{% url 'blog:blog_list' %}" class="btn btn-primary">
+                    <i class="fas fa-arrow-left me-2"></i>Browse All Posts
+                </a>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

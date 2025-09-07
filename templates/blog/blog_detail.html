@@ -1,0 +1,488 @@
+{% extends 'blog/base.html' %}
+
+{% block title %}{{ post.title }} - AI Blog{% endblock %}
+
+{% block content %}
+<!-- Reading Progress Bar -->
+<div class="reading-progress-container">
+    <div class="reading-progress-bar" id="readingProgressBar"></div>
+</div>
+
+<!-- Scroll to Top Button -->
+<button id="scrollToTopBtn" class="scroll-to-top-btn" title="Back to top">
+    <i class="fas fa-arrow-up"></i>
+</button>
+
+<div class="container py-5">
+    <div class="row">
+        <!-- Main Content -->
+        <div class="col-lg-8 col-md-12">
+            <!-- Post Header -->
+            <div class="mb-4">
+                <span class="badge bg-primary mb-3">{{ post.category }}</span>
+                <span class="reading-time-badge ms-2">{{ post.get_reading_time_display }}</span>
+                <h1 class="display-5 fw-bold mobile-text-center">{{ post.title }}</h1>
+                <div class="text-muted mb-4 post-meta mobile-text-center">
+                    <i class="fas fa-user me-2"></i>{{ post.author.get_full_name|default:post.author.username }}
+                    <span class="mx-3 d-none d-sm-inline">•</span>
+                    <br class="d-sm-none">
+                    <i class="fas fa-calendar me-2"></i>{{ post.created_at|date:"F d, Y" }}
+                    <span class="mx-3 d-none d-sm-inline">•</span>
+                    <br class="d-sm-none">
+                    <i class="fas fa-clock me-2 reading-time"></i>{{ post.get_reading_time_display }}
+                    {% if post.updated_at != post.created_at %}
+                    <span class="mx-3 d-none d-sm-inline">•</span>
+                    <br class="d-sm-none">
+                    <i class="fas fa-edit me-2"></i>Updated {{ post.updated_at|date:"F d, Y" }}
+                    {% endif %}
+                </div>
+            </div>
+            
+            <!-- Featured Image -->
+            {% if post.featured_image %}
+            <div class="mb-4">
+                <img src="{{ post.featured_image.url }}" class="img-fluid rounded shadow" alt="{{ post.title }}">
+            </div>
+            {% endif %}
+            
+            <!-- Post Content -->
+            <div class="post-content">
+                {{ post.content|safe }}
+            </div>
+            
+            <!-- Post Footer -->
+            <hr class="my-5">
+            <div class="row">
+                <div class="col-md-6">
+                    <p class="text-muted mb-2">
+                        <i class="fas fa-folder me-2"></i>Category: 
+                        <a href="{% url 'blog:category_posts' post.category.name %}" class="text-decoration-none">
+                            {{ post.category }}
+                        </a>
+                    </p>
+                    {% if post.tags.exists %}
+                    <p class="text-muted mb-0">
+                        <i class="fas fa-tags me-2"></i>Tags: 
+                        {% for tag in post.tags.all %}
+                        <a href="{% url 'blog:tag_posts' tag.slug %}" class="badge bg-success text-decoration-none me-1"># {{ tag.name }}</a>
+                        {% endfor %}
+                    </p>
+                    {% endif %}
+                </div>
+                <div class="col-md-6 text-md-end">
+                    <div class="d-flex justify-content-end align-items-center">
+                        <span class="text-muted me-3">
+                            <i class="fas fa-share-alt me-2"></i>Share:
+                        </span>
+                        <div class="share-buttons">
+                            <button type="button" class="btn btn-outline-primary btn-sm" onclick="shareOnTwitter()" title="Share on Twitter">
+                                <i class="fab fa-twitter"></i>
+                            </button>
+                            <button type="button" class="btn btn-outline-primary btn-sm" onclick="shareOnFacebook()" title="Share on Facebook">
+                                <i class="fab fa-facebook-f"></i>
+                            </button>
+                            <button type="button" class="btn btn-outline-primary btn-sm" onclick="shareOnLinkedIn()" title="Share on LinkedIn">
+                                <i class="fab fa-linkedin-in"></i>
+                            </button>
+                            <button type="button" class="btn btn-outline-primary btn-sm" onclick="copyToClipboard()" title="Copy link">
+                                <i class="fas fa-link"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Navigation -->
+            <div class="row mt-5">
+                <div class="col-12">
+                    <div class="d-flex justify-content-between">
+                        <a href="{% url 'blog:blog_list' %}" class="btn btn-outline-primary">
+                            <i class="fas fa-arrow-left me-2"></i>Back to All Posts
+                        </a>
+                        <a href="{% url 'blog:category_posts' post.category.name %}" class="btn btn-outline-secondary">
+                            More in {{ post.category }} <i class="fas fa-arrow-right ms-2"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Comments Section -->
+            <div class="row mt-5">
+                <div class="col-12">
+                    <div class="card shadow-sm comments-card">
+                        <div class="card-header bg-light">
+                            <h4 class="mb-0">
+                                <i class="fas fa-comments me-2"></i>
+                                Comments ({{ comments_count }})
+                            </h4>
+                        </div>
+                        <div class="card-body">
+                            <!-- Display Messages -->
+                            {% if messages %}
+                                {% for message in messages %}
+                                    <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                                        {{ message }}
+                                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                                    </div>
+                                {% endfor %}
+                            {% endif %}
+
+                            <!-- Comment Form -->
+                            <div class="mb-5 comment-form">
+                                <h5 class="mb-3">Leave a Comment</h5>
+                                <form method="post" class="row g-3">
+                                    {% csrf_token %}
+                                    <div class="col-12 col-md-6">
+                                        {{ comment_form.name }}
+                                        {% if comment_form.name.errors %}
+                                            <div class="text-danger small">{{ comment_form.name.errors.0 }}</div>
+                                        {% endif %}
+                                    </div>
+                                    <div class="col-12 col-md-6">
+                                        {{ comment_form.email }}
+                                        {% if comment_form.email.errors %}
+                                            <div class="text-danger small">{{ comment_form.email.errors.0 }}</div>
+                                        {% endif %}
+                                    </div>
+                                    <div class="col-12">
+                                        {{ comment_form.content }}
+                                        {% if comment_form.content.errors %}
+                                            <div class="text-danger small">{{ comment_form.content.errors.0 }}</div>
+                                        {% endif %}
+                                    </div>
+                                    <div class="col-12">
+                                        <button type="submit" class="btn btn-primary">
+                                            <i class="fas fa-paper-plane me-2"></i>Submit Comment
+                                        </button>
+                                        <small class="text-muted d-block d-sm-inline ms-sm-3 mt-2 mt-sm-0">
+                                            <i class="fas fa-info-circle me-1"></i>
+                                            Your comment will be reviewed before being published.
+                                        </small>
+                                    </div>
+                                </form>
+                            </div>
+
+                            <!-- Display Comments -->
+                            {% if comments %}
+                                <h5 class="mb-4">Comments</h5>
+                                {% load blog_extras %}
+                                {% render_comments comments %}
+                            {% else %}
+                                <div class="comment-empty-state">
+                                    <i class="fas fa-comments text-muted mb-3" style="font-size: 3rem;"></i>
+                                    <h6 class="text-muted">No comments yet</h6>
+                                    <p class="text-muted">Be the first to share your thoughts!</p>
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Sidebar -->
+        <div class="col-lg-4 col-md-12">
+            <div class="sidebar">
+                <!-- Search Widget -->
+                <div class="sidebar-widget mb-4">
+                    <h5 class="widget-title">
+                        <i class="fas fa-search me-2"></i>Search Posts
+                    </h5>
+                    <form method="GET" action="{% url 'blog:blog_list' %}" class="search-form">
+                        <div class="input-group">
+                            <input type="text" name="q" class="form-control" placeholder="Search articles..." value="{{ request.GET.q }}">
+                            <button class="btn btn-primary" type="submit">
+                                <i class="fas fa-search"></i>
+                            </button>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- Categories Widget -->
+                <div class="sidebar-widget mb-4">
+                    <h5 class="widget-title">
+                        <i class="fas fa-folder me-2"></i>Categories
+                    </h5>
+                    <ul class="category-list list-unstyled">
+                        {% for category in categories %}
+                        <li class="category-item">
+                            <a href="{% url 'blog:category_posts' category.name %}" class="category-link">
+                                <span class="category-name">{{ category.get_name_display }}</span>
+                                <span class="post-count">{{ category.post_count }}</span>
+                            </a>
+                        </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+
+                <!-- Archives Widget -->
+                <div class="sidebar-widget mb-4">
+                    <h5 class="widget-title">
+                        <i class="fas fa-archive me-2"></i>Archives
+                    </h5>
+                    <ul class="archive-list list-unstyled">
+                        {% for archive in archives %}
+                        <li class="archive-item">
+                            <a href="{% url 'blog:blog_list' %}?month={{ archive.month }}&year={{ archive.year }}" class="archive-link">
+                                <span class="archive-date">{{ archive.month_name }} {{ archive.year }}</span>
+                                <span class="post-count">{{ archive.post_count }}</span>
+                            </a>
+                        </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+
+                <!-- Featured Posts Widget -->
+                <div class="sidebar-widget mb-4">
+                    <h5 class="widget-title">
+                        <i class="fas fa-star me-2"></i>Featured Posts
+                    </h5>
+                    {% for featured_post in featured_posts %}
+                    <div class="featured-post-item mb-3">
+                        <div class="row g-0">
+                            <div class="col-4">
+                                <div class="featured-post-image">
+                                    {% if featured_post.featured_image %}
+                                    <img src="{{ featured_post.featured_image.url }}" alt="{{ featured_post.title }}" class="img-fluid rounded">
+                                    {% else %}
+                                    <div class="placeholder-image d-flex align-items-center justify-content-center bg-light rounded">
+                                        <i class="fas fa-image text-muted"></i>
+                                    </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            <div class="col-8">
+                                <div class="featured-post-content ps-3">
+                                    <h6 class="featured-post-title">
+                                        <a href="{{ featured_post.get_absolute_url }}">{{ featured_post.title|truncatechars:50 }}</a>
+                                    </h6>
+                                    <small class="text-muted">
+                                        <i class="fas fa-calendar me-1"></i>{{ featured_post.created_at|date:"M d, Y" }}
+                                    </small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% empty %}
+                    <p class="text-muted">No featured posts available.</p>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Sharing JavaScript -->
+<script>
+    // Get current page URL and title
+    const currentUrl = window.location.href;
+    const pageTitle = "{{ post.title|escapejs }}";
+    
+    // Twitter sharing
+    function shareOnTwitter() {
+        const twitterUrl = `https://twitter.com/intent/tweet?url=${encodeURIComponent(currentUrl)}&text=${encodeURIComponent(pageTitle + " - AI Blog")}`;
+        window.open(twitterUrl, '_blank', 'width=600,height=400');
+    }
+    
+    // Facebook sharing
+    function shareOnFacebook() {
+        const facebookUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(currentUrl)}`;
+        window.open(facebookUrl, '_blank', 'width=600,height=400');
+    }
+    
+    // LinkedIn sharing
+    function shareOnLinkedIn() {
+        const linkedinUrl = `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(currentUrl)}`;
+        window.open(linkedinUrl, '_blank', 'width=600,height=400');
+    }
+    
+    // Copy to clipboard
+    function copyToClipboard() {
+        navigator.clipboard.writeText(currentUrl).then(function() {
+            // Show success message
+            const button = event.target.closest('button');
+            const originalIcon = button.innerHTML;
+            button.innerHTML = '<i class="fas fa-check"></i>';
+            button.classList.remove('btn-outline-primary');
+            button.classList.add('btn-success');
+            
+            setTimeout(function() {
+                button.innerHTML = originalIcon;
+                button.classList.remove('btn-success');
+                button.classList.add('btn-outline-primary');
+            }, 2000);
+        }).catch(function(err) {
+            // Fallback for older browsers
+            const textArea = document.createElement('textarea');
+            textArea.value = currentUrl;
+            document.body.appendChild(textArea);
+            textArea.select();
+            document.execCommand('copy');
+            document.body.removeChild(textArea);
+            
+            // Show success message
+            const button = event.target.closest('button');
+            const originalIcon = button.innerHTML;
+            button.innerHTML = '<i class="fas fa-check"></i>';
+            button.classList.remove('btn-outline-primary');
+            button.classList.add('btn-success');
+            
+            setTimeout(function() {
+                button.innerHTML = originalIcon;
+                button.classList.remove('btn-success');
+                button.classList.add('btn-outline-primary');
+            }, 2000);
+        });
+    }
+    
+    // Reading Progress Bar Functionality
+    function updateReadingProgress() {
+        const progressBar = document.getElementById('readingProgressBar');
+        const article = document.querySelector('.post-content');
+        
+        if (!progressBar || !article) return;
+        
+        const articleTop = article.offsetTop;
+        const articleHeight = article.offsetHeight;
+        const windowHeight = window.innerHeight;
+        const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+        
+        // Calculate progress
+        const startReading = articleTop - windowHeight / 3;
+        const finishReading = articleTop + articleHeight - windowHeight / 3;
+        const totalReadingHeight = finishReading - startReading;
+        
+        let progress = 0;
+        
+        if (scrollTop >= startReading && scrollTop <= finishReading) {
+            progress = ((scrollTop - startReading) / totalReadingHeight) * 100;
+        } else if (scrollTop > finishReading) {
+            progress = 100;
+        }
+        
+        // Ensure progress is between 0 and 100
+        progress = Math.max(0, Math.min(100, progress));
+        
+        // Update progress bar
+        progressBar.style.width = progress + '%';
+        
+        // Update page title with reading progress (optional feature)
+        const originalTitle = '{{ post.title }} - AI Blog';
+        if (progress > 0 && progress < 100) {
+            document.title = `(${Math.round(progress)}%) ${originalTitle}`;
+        } else {
+            document.title = originalTitle;
+        }
+        
+        // Add a subtle animation when reaching 100%
+        if (progress === 100) {
+            progressBar.style.background = 'linear-gradient(90deg, #22c55e 0%, #16a34a 50%, #15803d 100%)';
+        } else {
+            progressBar.style.background = 'linear-gradient(90deg, var(--primary-color) 0%, var(--primary-light) 50%, var(--accent-color) 100%)';
+        }
+    }
+    
+    // Initialize reading progress tracking
+    document.addEventListener('DOMContentLoaded', function() {
+        const scrollToTopBtn = document.getElementById('scrollToTopBtn');
+        
+        // Update progress on scroll
+        window.addEventListener('scroll', function() {
+            updateReadingProgress();
+            
+            // Show/hide scroll to top button
+            if (window.pageYOffset > 300) {
+                scrollToTopBtn.classList.add('visible');
+            } else {
+                scrollToTopBtn.classList.remove('visible');
+            }
+        });
+        
+        // Scroll to top functionality
+        scrollToTopBtn.addEventListener('click', function() {
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+        });
+        
+        // Update progress on resize
+        window.addEventListener('resize', updateReadingProgress);
+        
+        // Initial update
+        updateReadingProgress();
+    });
+
+    // Threaded Comments Functionality
+    document.addEventListener('DOMContentLoaded', function() {
+        // Handle reply button clicks
+        document.querySelectorAll('.reply-btn').forEach(button => {
+            button.addEventListener('click', function() {
+                const commentId = this.dataset.commentId;
+                const commentAuthor = this.dataset.commentAuthor;
+                const replyForm = document.getElementById(`reply-form-${commentId}`);
+                
+                // Hide all other reply forms
+                document.querySelectorAll('.reply-form').forEach(form => {
+                    if (form.id !== `reply-form-${commentId}`) {
+                        form.style.display = 'none';
+                    }
+                });
+                
+                // Toggle current reply form
+                if (replyForm.style.display === 'none') {
+                    replyForm.style.display = 'block';
+                    // Focus on the textarea
+                    const textarea = replyForm.querySelector('textarea[name="content"]');
+                    if (textarea) {
+                        textarea.focus();
+                    }
+                } else {
+                    replyForm.style.display = 'none';
+                }
+            });
+        });
+        
+        // Handle cancel reply buttons
+        document.querySelectorAll('.cancel-reply').forEach(button => {
+            button.addEventListener('click', function() {
+                const replyForm = this.closest('.reply-form');
+                replyForm.style.display = 'none';
+                // Clear form fields
+                replyForm.querySelector('form').reset();
+            });
+        });
+        
+        // Handle reply form submissions
+        document.querySelectorAll('.reply-comment-form').forEach(form => {
+            form.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                // Get form data
+                const formData = new FormData(this);
+                
+                // Submit via fetch API for better UX
+                fetch(window.location.href, {
+                    method: 'POST',
+                    body: formData,
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest',
+                    }
+                })
+                .then(response => {
+                    if (response.ok) {
+                        // Reload page to show the new comment
+                        window.location.reload();
+                    } else {
+                        alert('There was an error submitting your reply. Please try again.');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('There was an error submitting your reply. Please try again.');
+                });
+            });
+        });
+    });
+</script>
+{% endblock %}

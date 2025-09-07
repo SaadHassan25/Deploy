@@ -1,0 +1,338 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}AI Blog{% endblock %}</title>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <link rel="icon" type="image/x-icon" href="{% static 'images/icon.ico' %}">
+    
+    <!-- Theme initialization script -->
+    <script>
+        // Initialize theme before page renders to prevent flash
+        (function() {
+            const savedTheme = localStorage.getItem('theme') || 'light';
+            document.documentElement.setAttribute('data-theme', savedTheme);
+            if (savedTheme === 'dark') {
+                document.documentElement.classList.add('dark-theme');
+            }
+        })();
+    </script>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-light">
+        <div class="container">
+            <a class="navbar-brand d-flex align-items-center" href="{% url 'blog:home' %}">
+                <i class="fas fa-brain brand-icon me-2"></i>
+                <span class="brand-text">AI Blog</span>
+            </a>
+            
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'blog:home' %}">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'blog:blog_list' %}">All Blogs</a>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="categoriesDropdown" role="button" data-bs-toggle="dropdown">
+                            Categories
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="{% url 'blog:category_posts' 'AI' %}">Artificial Intelligence</a></li>
+                            <li><a class="dropdown-item" href="{% url 'blog:category_posts' 'ML' %}">Machine Learning</a></li>
+                            <li><a class="dropdown-item" href="{% url 'blog:category_posts' 'DL' %}">Deep Learning</a></li>
+                            <li><a class="dropdown-item" href="{% url 'blog:category_posts' 'CV' %}">Computer Vision</a></li>
+                            <li><a class="dropdown-item" href="{% url 'blog:category_posts' 'NLP' %}">Natural Language Processing</a></li>
+                        </ul>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'blog:about_us' %}">About</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'blog:terms_conditions' %}">Terms</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'blog:privacy_policy' %}">Privacy</a>
+                    </li>
+                    <li class="nav-item">
+                        <button id="theme-toggle" class="btn btn-outline-primary nav-link-btn" title="Toggle theme">
+                            <i class="fas fa-moon" id="theme-icon"></i>
+                        </button>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main>
+        {% block content %}
+        {% endblock %}
+    </main>
+
+    <!-- Newsletter Section -->
+    <section class="newsletter-section text-white py-5">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-lg-8 text-center">
+                    <h2 class="newsletter-title mb-3">Stay Updated with AI Trends</h2>
+                    <p class="newsletter-description mb-4">Get the latest articles on AI, ML, and emerging technologies delivered to your inbox weekly.</p>
+                    
+                    <!-- Newsletter alert container -->
+                    <div id="newsletter-alert" class="mb-3" style="display: none;">
+                        <div class="alert alert-dismissible fade show" role="alert">
+                            <span id="newsletter-message"></span>
+                            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                        </div>
+                    </div>
+                    
+                    <form id="newsletter-form" class="newsletter-form d-flex">
+                        {% csrf_token %}
+                        <input type="email" id="newsletter-email" class="form-control" placeholder="Enter your email address" required>
+                        <button type="submit" class="btn btn-accent">
+                            <i class="fas fa-paper-plane me-2"></i>
+                            <span class="button-text">Subscribe</span>
+                            <span class="spinner-border spinner-border-sm d-none" role="status"></span>
+                        </button>
+                    </form>
+                    
+                    <p class="newsletter-note mt-3 mb-0">
+                        <small><i class="fas fa-lock me-1"></i>Your privacy is protected. No spam, unsubscribe anytime.</small>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="py-5">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-4 mb-4">
+                    <div class="d-flex align-items-center mb-3">
+                        <i class="fas fa-brain brand-icon me-2"></i>
+                        <h5 class="mb-0 footer-text">AI Blog</h5>
+                    </div>
+                    <p class="footer-muted">Exploring the frontiers of artificial intelligence, machine learning, and emerging technologies through insightful articles and research.</p>
+                    <!-- <div class="d-flex">
+                        <a href="#" class="social-link me-3"><i class="fab fa-twitter"></i></a>
+                        <a href="#" class="social-link me-3"><i class="fab fa-linkedin"></i></a>
+                        <a href="#" class="social-link me-3"><i class="fab fa-github"></i></a>
+                        <a href="#" class="social-link"><i class="fab fa-medium"></i></a>
+                    </div> -->
+                </div>
+                
+                <div class="col-lg-2 col-md-6 mb-4">
+                    <h6 class="footer-heading mb-3">Categories</h6>
+                    <ul class="list-unstyled">
+                        <li class="mb-2"><a href="{% url 'blog:category_posts' 'AI' %}" class="footer-link">Artificial Intelligence</a></li>
+                        <li class="mb-2"><a href="{% url 'blog:category_posts' 'ML' %}" class="footer-link">Machine Learning</a></li>
+                        <li class="mb-2"><a href="{% url 'blog:category_posts' 'DL' %}" class="footer-link">Deep Learning</a></li>
+                        <li class="mb-2"><a href="{% url 'blog:category_posts' 'CV' %}" class="footer-link">Computer Vision</a></li>
+                        <li class="mb-2"><a href="{% url 'blog:category_posts' 'NLP' %}" class="footer-link">NLP</a></li>
+                    </ul>
+                </div>
+                
+                <div class="col-lg-2 col-md-6 mb-4">
+                    <h6 class="footer-heading mb-3">Quick Links</h6>
+                    <ul class="list-unstyled">
+                        <li class="mb-2"><a href="{% url 'blog:home' %}" class="footer-link">Home</a></li>
+                        <li class="mb-2"><a href="{% url 'blog:blog_list' %}" class="footer-link">All Blogs</a></li>
+                        <li class="mb-2"><a href="{% url 'blog:about_us' %}" class="footer-link">About Us</a></li>
+                        <li class="mb-2"><a href="{% url 'blog:terms_conditions' %}" class="footer-link">Terms & Conditions</a></li>
+                        <li class="mb-2"><a href="{% url 'blog:privacy_policy' %}" class="footer-link">Privacy Policy</a></li>
+                    </ul>
+                </div>
+                
+                <div class="col-lg-4 mb-4">
+                    <h6 class="footer-heading mb-3">Contact Info</h6>
+                    <div class="d-flex align-items-center mb-2">
+                        <i class="fas fa-envelope footer-muted me-2"></i>
+                        <span class="footer-muted">contact@ai.bytes.com</span>
+                    </div>
+                    <div class="d-flex align-items-center mb-2">
+                        <i class="fas fa-phone footer-muted me-2"></i>
+                        <span class="footer-muted">+1 (555) 896-7466</span>
+                    </div>
+                    <div class="d-flex align-items-center">
+                        <i class="fas fa-map-marker-alt footer-muted me-2"></i>
+                        <span class="footer-muted">Ajman, UAE</span>
+                    </div>
+                </div>
+            </div>
+            
+            <hr class="my-4">
+            
+            <div class="row align-items-center">
+                <div class="col-md-6">
+                    <p class="mb-0 footer-muted">&copy; 2024 AI Blog. All rights reserved.</p>
+                </div>
+                <div class="col-md-6 text-md-end">
+                    <a href="{% url 'blog:privacy_policy' %}" class="footer-link me-3">Privacy Policy</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- Newsletter AJAX functionality -->
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const newsletterForm = document.getElementById('newsletter-form');
+        const newsletterEmail = document.getElementById('newsletter-email');
+        const submitButton = newsletterForm.querySelector('button[type="submit"]');
+        const buttonText = submitButton.querySelector('.button-text');
+        const spinner = submitButton.querySelector('.spinner-border');
+        const alertContainer = document.getElementById('newsletter-alert');
+        const alertDiv = alertContainer.querySelector('.alert');
+        const messageSpan = document.getElementById('newsletter-message');
+
+        newsletterForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const email = newsletterEmail.value.trim();
+            if (!email) {
+                showAlert('Please enter your email address.', 'danger');
+                return;
+            }
+
+            // Show loading state
+            setLoadingState(true);
+
+            // Get CSRF token
+            const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+
+            // Make AJAX request
+            fetch('{% url "blog:newsletter_signup" %}', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                    'X-CSRFToken': csrfToken,
+                },
+                body: new URLSearchParams({
+                    'email': email,
+                    'csrfmiddlewaretoken': csrfToken
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                setLoadingState(false);
+                
+                if (data.success) {
+                    showAlert(data.message, 'success');
+                    newsletterEmail.value = ''; // Clear the form
+                } else {
+                    showAlert(data.message, 'danger');
+                }
+            })
+            .catch(error => {
+                setLoadingState(false);
+                showAlert('An error occurred. Please try again later.', 'danger');
+                console.error('Error:', error);
+            });
+        });
+
+        function setLoadingState(loading) {
+            if (loading) {
+                submitButton.disabled = true;
+                buttonText.classList.add('d-none');
+                spinner.classList.remove('d-none');
+            } else {
+                submitButton.disabled = false;
+                buttonText.classList.remove('d-none');
+                spinner.classList.add('d-none');
+            }
+        }
+
+        function showAlert(message, type) {
+            messageSpan.textContent = message;
+            alertDiv.className = `alert alert-${type} alert-dismissible fade show`;
+            alertContainer.style.display = 'block';
+            
+            // Auto-hide success messages after 8 seconds (longer for newsletter confirmation)
+            if (type === 'success') {
+                setTimeout(() => {
+                    alertContainer.style.display = 'none';
+                }, 8000);
+            }
+        }
+    });
+    
+    // Theme Toggle Functionality
+    document.addEventListener('DOMContentLoaded', function() {
+        const themeToggle = document.getElementById('theme-toggle');
+        const themeIcon = document.getElementById('theme-icon');
+        const html = document.documentElement;
+        
+        // Get current theme
+        function getCurrentTheme() {
+            return localStorage.getItem('theme') || 'light';
+        }
+        
+        // Update theme icon
+        function updateThemeIcon(theme) {
+            if (theme === 'dark') {
+                themeIcon.className = 'fas fa-sun';
+                themeToggle.title = 'Switch to light theme';
+            } else {
+                themeIcon.className = 'fas fa-moon';
+                themeToggle.title = 'Switch to dark theme';
+            }
+        }
+        
+        // Apply theme
+        function applyTheme(theme) {
+            html.setAttribute('data-theme', theme);
+            if (theme === 'dark') {
+                html.classList.add('dark-theme');
+            } else {
+                html.classList.remove('dark-theme');
+            }
+            localStorage.setItem('theme', theme);
+            updateThemeIcon(theme);
+        }
+        
+        // Initialize theme
+        const currentTheme = getCurrentTheme();
+        updateThemeIcon(currentTheme);
+        
+        // Theme toggle event
+        themeToggle.addEventListener('click', function() {
+            const currentTheme = getCurrentTheme();
+            const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+            applyTheme(newTheme);
+            
+            // Add a subtle animation
+            themeToggle.style.transform = 'rotate(360deg)';
+            setTimeout(() => {
+                themeToggle.style.transform = 'rotate(0deg)';
+            }, 300);
+        });
+    });
+    </script>
+</body>
+</html>
