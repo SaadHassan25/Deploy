@@ -14,6 +14,15 @@ class MediaStorage(S3Boto3Storage):
     default_acl = 'public-read'
     file_overwrite = False
     custom_domain = settings.AWS_S3_CUSTOM_DOMAIN
+    location = ''  # Store files in root of bucket (no subfolder)
+    
+    def url(self, name):
+        """Generate the URL for accessing the file"""
+        # Clean up the name to handle spaces and special characters
+        import urllib.parse
+        if self.custom_domain:
+            return f"https://{self.custom_domain}/{urllib.parse.quote(name)}"
+        return super().url(name)
 
 
 class StaticStorage(S3Boto3Storage):
