@@ -1,0 +1,7 @@
+{% load blog_extras %}
+<!-- JSON-LD Structured Data -->
+{% for schema in schemas %}
+<script type="application/ld+json">
+{{ schema|json_ld }}
+</script>
+{% endfor %}

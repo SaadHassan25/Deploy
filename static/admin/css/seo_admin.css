@@ -1,0 +1,457 @@
+/* SEO Admin Styles - Yoast-like interface */
+
+.seo-analysis-admin {
+    background: #f8f9fa;
+    border: 1px solid #dee2e6;
+    border-radius: 8px;
+    padding: 20px;
+    margin: 15px 0;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+}
+
+.seo-score-badge {
+    display: inline-block;
+    padding: 10px 20px;
+    border-radius: 25px;
+    margin-bottom: 20px;
+    font-weight: bold;
+    text-align: center;
+}
+
+.seo-score-good {
+    background: #28a745;
+    color: white;
+}
+
+.seo-score-average {
+    background: #ffc107;
+    color: #212529;
+}
+
+.seo-score-poor {
+    background: #dc3545;
+    color: white;
+}
+
+.seo-section {
+    margin-bottom: 20px;
+    padding: 15px;
+    border-radius: 6px;
+    border-left: 4px solid;
+}
+
+.seo-section h4 {
+    margin: 0 0 10px 0;
+    font-size: 16px;
+    font-weight: 600;
+}
+
+.seo-section ul {
+    margin: 0;
+    padding-left: 20px;
+}
+
+.seo-section li {
+    margin-bottom: 5px;
+    line-height: 1.4;
+}
+
+.seo-good {
+    background: #e8f5e8;
+    border-left-color: #28a745;
+}
+
+.seo-issues {
+    background: #ffeaea;
+    border-left-color: #dc3545;
+}
+
+.seo-recommendations {
+    background: #fff3cd;
+    border-left-color: #ffc107;
+}
+
+/* SEO Preview Widgets */
+.seo-preview-container {
+    background: white;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 20px;
+    margin: 15px 0;
+}
+
+.seo-tabs {
+    display: flex;
+    border-bottom: 1px solid #ddd;
+    margin-bottom: 20px;
+}
+
+.seo-tab-btn {
+    background: none;
+    border: none;
+    padding: 10px 20px;
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    font-weight: 500;
+    color: #666;
+    transition: all 0.3s ease;
+}
+
+.seo-tab-btn.active {
+    border-bottom-color: #007cba;
+    color: #007cba;
+}
+
+.seo-tab-btn:hover {
+    background: #f8f9fa;
+}
+
+.seo-tab-content {
+    display: none;
+}
+
+.seo-tab-content.active {
+    display: block;
+}
+
+/* Google Preview */
+.google-preview {
+    font-family: arial, sans-serif;
+}
+
+.google-url {
+    color: #006621;
+    font-size: 14px;
+    line-height: 16px;
+    margin-bottom: 2px;
+}
+
+.google-title {
+    color: #1a0dab;
+    font-size: 20px;
+    line-height: 26px;
+    margin-bottom: 2px;
+    cursor: pointer;
+    text-decoration: underline;
+}
+
+.google-description {
+    color: #545454;
+    font-size: 14px;
+    line-height: 22px;
+}
+
+/* Facebook Preview */
+.facebook-preview {
+    border: 1px solid #dadde1;
+    border-radius: 8px;
+    overflow: hidden;
+    max-width: 500px;
+    background: white;
+}
+
+.facebook-image {
+    height: 261px;
+    background: #f2f3f5;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.facebook-image-placeholder {
+    color: #8a8d91;
+    font-size: 14px;
+}
+
+.facebook-content {
+    padding: 12px 16px;
+}
+
+.facebook-title {
+    font-weight: 600;
+    font-size: 16px;
+    line-height: 20px;
+    color: #1d2129;
+    margin-bottom: 5px;
+}
+
+.facebook-description {
+    font-size: 14px;
+    line-height: 20px;
+    color: #606770;
+    margin-bottom: 5px;
+}
+
+.facebook-url {
+    font-size: 12px;
+    line-height: 16px;
+    color: #606770;
+    text-transform: uppercase;
+}
+
+/* Twitter Preview */
+.twitter-preview {
+    border: 1px solid #cfd9de;
+    border-radius: 16px;
+    overflow: hidden;
+    max-width: 504px;
+    background: white;
+}
+
+.twitter-image {
+    height: 252px;
+    background: #f7f9fa;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.twitter-image-placeholder {
+    color: #536471;
+    font-size: 14px;
+}
+
+.twitter-content {
+    padding: 12px 16px;
+}
+
+.twitter-title {
+    font-weight: 700;
+    font-size: 15px;
+    line-height: 20px;
+    color: #0f1419;
+    margin-bottom: 2px;
+}
+
+.twitter-description {
+    font-size: 15px;
+    line-height: 20px;
+    color: #536471;
+    margin-bottom: 2px;
+}
+
+.twitter-url {
+    font-size: 15px;
+    line-height: 20px;
+    color: #536471;
+}
+
+/* SEO Analysis Widgets */
+.seo-analysis-container {
+    background: white;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 20px;
+    margin: 15px 0;
+}
+
+.seo-score-circle {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.seo-score {
+    font-size: 48px;
+    font-weight: bold;
+    color: #333;
+}
+
+.seo-score-label {
+    font-size: 14px;
+    color: #666;
+    margin-top: 5px;
+}
+
+.seo-checks, .seo-recommendations {
+    margin-bottom: 20px;
+}
+
+.seo-checks h4, .seo-recommendations h4 {
+    font-size: 16px;
+    margin-bottom: 10px;
+    color: #333;
+}
+
+.seo-check, .seo-recommendation {
+    display: flex;
+    align-items: center;
+    padding: 8px 0;
+    border-bottom: 1px solid #eee;
+}
+
+.seo-check:last-child, .seo-recommendation:last-child {
+    border-bottom: none;
+}
+
+.seo-check i, .seo-recommendation i {
+    margin-right: 10px;
+    width: 16px;
+    text-align: center;
+}
+
+.seo-check.good i {
+    color: #28a745;
+}
+
+.seo-check.warning i {
+    color: #ffc107;
+}
+
+.seo-check.error i {
+    color: #dc3545;
+}
+
+.seo-check.pending i {
+    color: #6c757d;
+}
+
+/* Keyword Density Widget */
+.keyword-density-container {
+    background: white;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 20px;
+    margin: 15px 0;
+}
+
+.keyword-stats {
+    display: flex;
+    justify-content: space-around;
+    margin-bottom: 20px;
+}
+
+.keyword-stat {
+    text-align: center;
+}
+
+.keyword-stat-number {
+    font-size: 24px;
+    font-weight: bold;
+    color: #333;
+}
+
+.keyword-stat-label {
+    font-size: 12px;
+    color: #666;
+    margin-top: 5px;
+}
+
+.keyword-density-bar {
+    position: relative;
+    height: 20px;
+    background: #e9ecef;
+    border-radius: 10px;
+    margin-bottom: 15px;
+}
+
+.density-bar-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #dc3545, #ffc107, #28a745, #ffc107, #dc3545);
+    border-radius: 10px;
+    transition: width 0.3s ease;
+}
+
+.density-markers {
+    position: relative;
+    height: 20px;
+    margin-bottom: 10px;
+}
+
+.density-marker {
+    position: absolute;
+    font-size: 10px;
+    color: #666;
+    transform: translateX(-50%);
+}
+
+.density-status {
+    display: flex;
+    align-items: center;
+    font-size: 14px;
+    color: #666;
+}
+
+.density-status i {
+    margin-right: 8px;
+}
+
+/* Readability Widget */
+.readability-container {
+    background: white;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 20px;
+    margin: 15px 0;
+}
+
+.readability-score {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.flesch-score {
+    font-size: 36px;
+    font-weight: bold;
+    color: #333;
+}
+
+.readability-level {
+    font-size: 16px;
+    color: #666;
+    margin-top: 5px;
+}
+
+.readability-details {
+    margin-bottom: 20px;
+}
+
+.readability-detail {
+    display: flex;
+    justify-content: space-between;
+    padding: 5px 0;
+    border-bottom: 1px solid #eee;
+}
+
+.readability-detail:last-child {
+    border-bottom: none;
+}
+
+.readability-label {
+    font-weight: 500;
+    color: #333;
+}
+
+.readability-value {
+    color: #666;
+}
+
+.readability-recommendations h5 {
+    margin-bottom: 10px;
+    color: #333;
+}
+
+.readability-recommendations ul {
+    margin: 0;
+    padding-left: 20px;
+}
+
+.readability-recommendations li {
+    margin-bottom: 5px;
+    color: #666;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .seo-tabs {
+        flex-direction: column;
+    }
+    
+    .keyword-stats {
+        flex-direction: column;
+        gap: 15px;
+    }
+    
+    .facebook-preview, .twitter-preview {
+        max-width: 100%;
+    }
+}

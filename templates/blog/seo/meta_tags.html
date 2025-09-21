@@ -1,0 +1,26 @@
+<!-- Meta Tags for SEO -->
+<title>{{ meta_tags.title }}</title>
+<meta name="description" content="{{ meta_tags.description }}">
+{% if meta_tags.keywords %}<meta name="keywords" content="{{ meta_tags.keywords }}">{% endif %}
+<meta name="robots" content="{{ meta_tags.robots }}">
+<link rel="canonical" href="{{ meta_tags.canonical }}">
+
+<!-- Open Graph Meta Tags -->
+{% for key, value in og_tags.items %}
+    {% if value %}
+        {% if key == "article:tag" %}
+            {% for tag in value %}
+                <meta property="{{ key }}" content="{{ tag }}">
+            {% endfor %}
+        {% else %}
+            <meta property="{{ key }}" content="{{ value }}">
+        {% endif %}
+    {% endif %}
+{% endfor %}
+
+<!-- Twitter Card Meta Tags -->
+{% for key, value in twitter_tags.items %}
+    {% if value %}
+        <meta name="{{ key }}" content="{{ value }}">
+    {% endif %}
+{% endfor %}
