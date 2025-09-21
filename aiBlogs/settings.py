@@ -204,9 +204,34 @@ STATICFILES_DIRS = [
 ]
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 
-# Media files
-MEDIA_URL = 'media/'
-MEDIA_ROOT = BASE_DIR / 'media'
+# DigitalOcean Spaces Configuration
+USE_SPACES = os.environ.get('USE_SPACES', 'False').lower() == 'true'
+
+if USE_SPACES:
+    # DigitalOcean Spaces settings
+    AWS_ACCESS_KEY_ID = os.environ.get('SPACES_ACCESS_KEY')
+    AWS_SECRET_ACCESS_KEY = os.environ.get('SPACES_SECRET_KEY')
+    AWS_STORAGE_BUCKET_NAME = os.environ.get('SPACES_BUCKET_NAME')
+    AWS_S3_ENDPOINT_URL = f"https://{os.environ.get('SPACES_REGION', 'nyc3')}.digitaloceanspaces.com"
+    AWS_S3_OBJECT_PARAMETERS = {
+        'CacheControl': 'max-age=86400',
+    }
+    AWS_LOCATION = 'media'
+    AWS_DEFAULT_ACL = 'public-read'
+    AWS_S3_CUSTOM_DOMAIN = f"{AWS_STORAGE_BUCKET_NAME}.{os.environ.get('SPACES_REGION', 'nyc3')}.digitaloceanspaces.com"
+    
+    # Media files configuration for Spaces
+    DEFAULT_FILE_STORAGE = 'aiBlogs.storage_backends.MediaStorage'
+    MEDIA_URL = f"https://{AWS_S3_CUSTOM_DOMAIN}/{AWS_LOCATION}/"
+    
+    # Static files can also be served from Spaces (optional)
+    # STATICFILES_STORAGE = 'storages.backends.s3boto3.S3StaticStorage'
+    # STATIC_URL = f"https://{AWS_S3_CUSTOM_DOMAIN}/static/"
+    
+else:
+    # Local development media files
+    MEDIA_URL = '/media/'
+    MEDIA_ROOT = BASE_DIR / 'media'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
@@ -243,7 +268,14 @@ DEFAULT_FROM_EMAIL = 'AI Blog <noreply@aiblog.com>'
 SERVER_EMAIL = DEFAULT_FROM_EMAIL
 
 # CKEditor Configuration
-CKEDITOR_UPLOAD_PATH = 'uploads/'
+
+# CKEditor Configuration
+if USE_SPACES:
+    CKEDITOR_UPLOAD_PATH = 'uploads/'
+    CKEDITOR_STORAGE_BACKEND = 'aiBlogs.storage_backends.MediaStorage'
+else:
+    CKEDITOR_UPLOAD_PATH = 'uploads/'
+
 CKEDITOR_IMAGE_BACKEND = "pillow"
 CKEDITOR_JQUERY_URL = 'https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js'
 
@@ -301,4 +333,3 @@ CKEDITOR_CONFIGS = {
         'format_h6': {'element': 'h6'},
     }
 }
-
