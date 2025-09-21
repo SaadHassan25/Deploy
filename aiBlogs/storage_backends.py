@@ -7,9 +7,13 @@ class MediaStorage(S3Boto3Storage):
     Custom storage class for media files using DigitalOcean Spaces
     """
     bucket_name = settings.AWS_STORAGE_BUCKET_NAME
-    location = 'media'
+    access_key = settings.AWS_ACCESS_KEY_ID
+    secret_key = settings.AWS_SECRET_ACCESS_KEY
+    endpoint_url = settings.AWS_S3_ENDPOINT_URL
+    region_name = settings.AWS_S3_REGION_NAME
     default_acl = 'public-read'
     file_overwrite = False
+    custom_domain = settings.AWS_S3_CUSTOM_DOMAIN
 
 
 class StaticStorage(S3Boto3Storage):
@@ -17,6 +21,11 @@ class StaticStorage(S3Boto3Storage):
     Custom storage class for static files using DigitalOcean Spaces
     """
     bucket_name = settings.AWS_STORAGE_BUCKET_NAME
+    access_key = settings.AWS_ACCESS_KEY_ID
+    secret_key = settings.AWS_SECRET_ACCESS_KEY
+    endpoint_url = settings.AWS_S3_ENDPOINT_URL
+    region_name = settings.AWS_S3_REGION_NAME
     location = 'static'
     default_acl = 'public-read'
     file_overwrite = True  # Static files can be overwritten
+    custom_domain = settings.AWS_S3_CUSTOM_DOMAIN

@@ -1,29 +1,64 @@
-# DigitalOcean Spaces Setup Guide
+# DigitalOcean Spaces Setup Guide - UPDATED
 
-## Step 1: Create DigitalOcean Spaces Bucket
+## Issue Fix: InvalidAccessKeyId Error
 
-1. Log in to your DigitalOcean account
-2. Go to "Spaces" in the left sidebar
-3. Click "Create Space"
-4. Choose a region (e.g., NYC3, SFO3, etc.)
-5. Choose a unique bucket name (e.g., "yourblog-media")
-6. Set "File Listing" to "Public" (so your images are accessible)
-7. Click "Create Space"
+Based on your setup, here's the corrected configuration:
 
-## Step 2: Generate API Keys
+## Step 1: Verify Your DigitalOcean Spaces
 
-1. Go to "API" in the DigitalOcean dashboard
-2. Click "Generate New Token" in the "Spaces access keys" section
-3. Give it a name (e.g., "blog-spaces-access")
-4. Save both the Access Key and Secret Key securely
+From your URLs, I can see:
+- **Bucket Name**: `django-blog-images`
+- **Region**: `nyc3`
+- **CDN URL**: `https://django-blog-images.nyc3.cdn.digitaloceanspaces.com`
+- **Direct URL**: `https://django-blog-images.nyc3.digitaloceanspaces.com`
 
-## Step 3: Configure CORS Policy (Important!)
+## Step 2: Environment Variables (CRITICAL)
 
-In your DigitalOcean Spaces dashboard:
-1. Go to your created Space
-2. Click on "Settings" tab
-3. Scroll down to "CORS Configurations"
-4. Add this configuration:
+Set these EXACT environment variables in your DigitalOcean App Platform:
+
+```bash
+USE_SPACES=true
+SPACES_ACCESS_KEY=your_actual_access_key_here
+SPACES_SECRET_KEY=your_actual_secret_key_here
+SPACES_BUCKET_NAME=django-blog-images
+SPACES_REGION=nyc3
+```
+
+⚠️ **IMPORTANT**: 
+- Make sure there are NO quotes around the values
+- Make sure there are NO extra spaces
+- The keys must be EXACTLY as shown above
+
+## Step 3: Test Your Configuration
+
+1. Deploy your app with the environment variables
+2. Run this debug script to check your configuration:
+
+```bash
+python manage.py shell
+exec(open('debug_spaces.py').read())
+```
+
+This will show you exactly what's wrong with your configuration.
+
+## Step 4: Common Fixes
+
+### If you get "InvalidAccessKeyId: None":
+- Your `SPACES_ACCESS_KEY` environment variable is not set correctly
+- Check for typos in the variable name
+- Make sure you're setting it in the right environment (production, not development)
+
+### If you get "SignatureDoesNotMatch":
+- Your `SPACES_SECRET_KEY` is incorrect
+- Regenerate your Spaces keys and update them
+
+### If you get "NoSuchBucket":
+- Your `SPACES_BUCKET_NAME` is incorrect
+- Make sure it matches exactly: `django-blog-images`
+
+## Step 5: Verify CORS Configuration
+
+In your DigitalOcean Spaces dashboard, make sure CORS is configured:
 
 ```xml
 <CORSConfiguration>
@@ -39,47 +74,29 @@ In your DigitalOcean Spaces dashboard:
 </CORSConfiguration>
 ```
 
-## Step 4: Set Environment Variables in DigitalOcean App Platform
+## Step 6: Test Upload
 
-In your DigitalOcean App Platform dashboard:
+After fixing the environment variables:
+1. Redeploy your app
+2. Try uploading an image through CKEditor
+3. Check if it appears in your Spaces bucket
+4. Verify the image loads correctly on your website
 
-1. Go to your app
-2. Click on "Settings" tab
-3. Scroll down to "Environment Variables"
-4. Add these variables:
+## Troubleshooting Commands
 
-```
-USE_SPACES=true
-SPACES_ACCESS_KEY=your_access_key_here
-SPACES_SECRET_KEY=your_secret_key_here
-SPACES_BUCKET_NAME=your_bucket_name_here
-SPACES_REGION=nyc3  (or your chosen region)
-```
-
-## Step 5: Deploy Your App
-
-After setting the environment variables, trigger a new deployment. Your images will now be stored in DigitalOcean Spaces and will persist across rebuilds.
-
-## Testing
-
-1. Upload an image through your Django admin
-2. Check if it appears in your DigitalOcean Spaces bucket
-3. Verify the image loads correctly on your website
-4. Rebuild your app - the images should still be there!
-
-## Troubleshooting
-
-- If images don't upload: Check your API keys and CORS configuration
-- If images don't display: Verify your bucket is set to "Public" file listing
-- If you get permission errors: Make sure your API key has write permissions to Spaces
-
-## Optional: Static Files in Spaces
-
-If you also want to serve static files (CSS, JS) from Spaces, uncomment these lines in settings.py:
+Run these in your Django shell to debug:
 
 ```python
-STATICFILES_STORAGE = 'aiBlogs.storage_backends.StaticStorage'
-STATIC_URL = f"https://{AWS_S3_CUSTOM_DOMAIN}/static/"
-```
+# Check if USE_SPACES is working
+from django.conf import settings
+print(f"USE_SPACES: {settings.USE_SPACES}")
 
-Then run `python manage.py collectstatic` to upload your static files to Spaces.
+# Check if AWS settings are loaded
+print(f"Bucket: {settings.AWS_STORAGE_BUCKET_NAME}")
+print(f"Region: {settings.AWS_S3_REGION_NAME}")
+print(f"Endpoint: {settings.AWS_S3_ENDPOINT_URL}")
+
+# Test file upload
+from django.core.files.storage import default_storage
+print(f"Storage backend: {default_storage.__class__}")
+```
