@@ -6,6 +6,7 @@ from PIL import Image, ImageOps
 from django.core.files.base import ContentFile
 from django.core.files.storage import default_storage
 import io
+import re
 import os
 
 
