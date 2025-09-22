@@ -1,3 +1,5 @@
+#################################################################################
+
 """
 Django settings for aiBlogs project.
 
@@ -224,6 +226,15 @@ if USE_SPACES:
     
     # Media files configuration for Spaces
     DEFAULT_FILE_STORAGE = 'aiBlogs.storage_backends.MediaStorage'
+        # For Django 4.2+, also set the new setting name
+    STORAGES = {
+        "default": {
+            "BACKEND": "aiBlogs.storage_backends.MediaStorage",
+        },
+        "staticfiles": {
+            "BACKEND": "django.contrib.staticfiles.storage.StaticFilesStorage",
+        },
+    }
     MEDIA_URL = f"https://{AWS_S3_CUSTOM_DOMAIN}/"
     
     # Static files can also be served from Spaces (optional)
