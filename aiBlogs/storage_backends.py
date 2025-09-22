@@ -21,8 +21,16 @@ class MediaStorage(S3Boto3Storage):
         # Clean up the name to handle spaces and special characters
         import urllib.parse
         if self.custom_domain:
-            return f"https://{self.custom_domain}/{urllib.parse.quote(name)}"
+            # Ensure the name doesn't start with a slash
+            clean_name = name.lstrip('/')
+            return f"https://{self.custom_domain}/{urllib.parse.quote(clean_name)}"
         return super().url(name)
+    
+    def _save(self, name, content):
+        """Override save to ensure proper file path handling"""
+        # Clean the name to avoid path issues
+        name = name.lstrip('/')
+        return super()._save(name, content)
 
 
 class StaticStorage(S3Boto3Storage):

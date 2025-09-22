@@ -96,7 +96,7 @@ class BlogPost(models.Model):
     tags = models.ManyToManyField(Tag, blank=True, related_name='posts')
     content = RichTextUploadingField(config_name='blog_content')
     excerpt = models.TextField(max_length=300, help_text="Brief description of the blog post")
-    featured_image = models.ImageField(upload_to='blog_images/', blank=True, null=True)
+    featured_image = models.ImageField(upload_to='uploads/', blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     is_published = models.BooleanField(default=True)
@@ -130,7 +130,7 @@ class BlogPost(models.Model):
         help_text="Facebook/Open Graph description (300 chars max)"
     )
     og_image = models.ImageField(
-        upload_to='blog_images/og/', 
+        upload_to='uploads/', 
         blank=True, 
         null=True,
         help_text="Facebook/Open Graph image (1200x630px recommended)"
