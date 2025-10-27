@@ -5,6 +5,8 @@ from import_export import resources, fields
 from import_export.widgets import ForeignKeyWidget, ManyToManyWidget, BooleanWidget
 from .models import BlogPost, Category, Tag, Comment, Newsletter
 from django.contrib.auth.models import User
+from tablib import formats
+
 
 
 class TagResource(resources.ModelResource):
@@ -128,6 +130,17 @@ class BlogPostResource(resources.ModelResource):
             # Recalculate SEO score after import
             instance.seo_score = instance.calculate_seo_score()
             instance.save()
+            
+    def get_import_formats(self):
+        """
+        Force the CSV import format to use UTF-8 encoding.
+        This fixes the issue where special characters like
+        ‘ and — appear as â€™ and â€” after import.
+        """
+        csv_format = formats.base.CSV
+        csv_format.encoding = 'utf-8'
+        return [csv_format]
+
 
 
 class CommentResource(resources.ModelResource):
