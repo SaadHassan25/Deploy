@@ -31,6 +31,7 @@ INSTALLED_APPS = [
     'django.contrib.sitemaps',  # For XML sitemaps
     'ckeditor',
     'ckeditor_uploader',
+    'import_export',  # Django import-export
     'blog',
 ]
 
