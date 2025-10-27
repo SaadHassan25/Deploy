@@ -4,12 +4,15 @@ from django.utils.html import format_html
 from django.urls import path
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404
+from import_export.admin import ImportExportModelAdmin, ExportMixin
 from .models import Category, BlogPost, Comment, Newsletter, Tag
 from .admin_widgets import SEOPreviewWidget, SEOAnalysisWidget, KeywordDensityWidget, ReadabilityWidget
 from .seo_utils import SEOAnalyzer
+from .resources import TagResource, CategoryResource, BlogPostResource, CommentResource, NewsletterResource
 
 @admin.register(Tag)
-class TagAdmin(admin.ModelAdmin):
+class TagAdmin(ImportExportModelAdmin):
+    resource_class = TagResource
     list_display = ['name', 'slug', 'created_at']
     search_fields = ['name']
     prepopulated_fields = {'slug': ('name',)}
@@ -27,7 +30,8 @@ class TagAdmin(admin.ModelAdmin):
     )
 
 @admin.register(Category)
-class CategoryAdmin(admin.ModelAdmin):
+class CategoryAdmin(ImportExportModelAdmin):
+    resource_class = CategoryResource
     list_display = ['name', 'get_name_display']
     search_fields = ['name']
     
@@ -57,7 +61,8 @@ class SEOInline(admin.StackedInline):
         js = ('admin/js/seo_admin.js',)
 
 @admin.register(BlogPost)
-class BlogPostAdmin(admin.ModelAdmin):
+class BlogPostAdmin(ImportExportModelAdmin):
+    resource_class = BlogPostResource
     list_display = ['title', 'author', 'category', 'get_tags_display', 'get_seo_score_display', 'get_reading_time_display', 'is_published', 'created_at']
     list_filter = ['category', 'tags', 'is_published', 'created_at', 'author', 'seo_score']
     search_fields = ['title', 'content', 'tags__name', 'focus_keyword']
@@ -214,7 +219,8 @@ class BlogPostAdmin(admin.ModelAdmin):
         # The SEO score is calculated automatically in the model's save method
 
 @admin.register(Comment)
-class CommentAdmin(admin.ModelAdmin):
+class CommentAdmin(ImportExportModelAdmin):
+    resource_class = CommentResource
     list_display = ['name', 'post', 'email', 'is_approved', 'created_at']
     list_filter = ['is_approved', 'created_at', 'post']
     search_fields = ['name', 'email', 'content', 'post__title']
@@ -245,7 +251,8 @@ class CommentAdmin(admin.ModelAdmin):
     disapprove_comments.short_description = "Disapprove selected comments"
 
 @admin.register(Newsletter)
-class NewsletterAdmin(admin.ModelAdmin):
+class NewsletterAdmin(ImportExportModelAdmin):
+    resource_class = NewsletterResource
     list_display = ['email', 'subscribed_at', 'is_active']
     list_filter = ['is_active', 'subscribed_at']
     search_fields = ['email']

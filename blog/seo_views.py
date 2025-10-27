@@ -78,9 +78,9 @@ def security_txt(request):
     content = """Contact: mailto:security@ai-bytes.tech
 Expires: 2025-12-31T23:59:59.000Z
 Encryption: https://ai-bytes.tech/pgp-key.txt
-Acknowledgments: https://ai-bytes.tech/security-acknowledgments/
-Policy: https://ai-bytes.tech/security-policy/
-Hiring: https://ai-bytes.tech/careers/
+Acknowledgments: https://ai-bytes.tech/terms/
+Policy: https://ai-bytes.tech/privacy/
+
 """
     
     return HttpResponse(content, content_type='text/plain')
