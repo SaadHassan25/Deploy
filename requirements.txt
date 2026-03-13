@@ -7,7 +7,7 @@ charset-normalizer==3.4.3
 click==8.2.1
 colorama==0.4.6
 diff-match-patch==20241021
-Django==5.2.5
+Django==5.2.12
 django-ckeditor==6.7.3
 django-import-export==4.3.12
 django-js-asset==3.1.2
@@ -16,9 +16,9 @@ gunicorn==23.0.0
 idna==3.10
 jmespath==1.0.1
 joblib==1.5.2
-nltk==3.9.1
+nltk==3.9.3
 packaging==25.0
-pillow==11.3.0
+pillow==12.1.1
 psycopg2==2.9.10
 pyphen==0.17.2
 python-dateutil==2.9.0.post0
@@ -33,4 +33,4 @@ textstat==0.7.10
 tqdm==4.67.1
 typing_extensions==4.15.0
 tzdata==2025.2
-urllib3==2.5.0
+urllib3==2.6.3
