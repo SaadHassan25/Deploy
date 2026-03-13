@@ -1,4 +1,4 @@
-from django.test import TestCase, RequestFactory
+from django.test import TestCase
 from django.contrib.auth.models import User
 from blog.models import BlogPost, Category, Comment, Newsletter, Tag
 
