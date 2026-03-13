@@ -12,6 +12,7 @@ from django.utils.html import strip_tags
 from .models import BlogPost, Category, Comment, Newsletter, Tag
 from .forms import CommentForm, NewsletterForm
 import calendar
+import os
 
 def home(request):
     """Home page with recent blog posts"""
@@ -285,7 +286,7 @@ def newsletter_signup(request):
         
         if created:
             # New subscription - send welcome email
-            email_sent = send_welcome_email(email)
+            email_sent = send_welcome_email(email, request=request)
             
             if email_sent:
                 return JsonResponse({
@@ -308,7 +309,7 @@ def newsletter_signup(request):
             newsletter.is_active = True
             newsletter.save()
             
-            email_sent = send_welcome_email(email)
+            email_sent = send_welcome_email(email, request=request)
             
             if email_sent:
                 return JsonResponse({
@@ -331,11 +332,14 @@ def newsletter_signup(request):
             'message': ' '.join(errors) if errors else 'Please enter a valid email address.'
         })
 
-def send_welcome_email(email):
+def send_welcome_email(email, request=None):
     """Send beautifully formatted welcome email to new newsletter subscriber"""
     try:
-        # Get current site URL for email links
-        site_url = 'http://127.0.0.1:8000'  # In production, use your actual domain
+        # Build site URL from the request or fall back to settings
+        if request:
+            site_url = request.build_absolute_uri('/').rstrip('/')
+        else:
+            site_url = os.environ.get('SITE_URL', 'http://127.0.0.1:8000')
         
         context = {
             'site_url': site_url,
